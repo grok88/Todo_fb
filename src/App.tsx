@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import './app.scss';
-import AppContent from './components/AppContent/AppContent';
 import AppDrawer, {ListsType} from './components/AppDrawer/AppDrawer';
 import {getCollection} from './api/api';
 import {Route, Switch} from 'react-router-dom';
-import {TodoList, TodoType} from './components/TodoList/TodoList';
+import {TodoList} from './components/TodoList/TodoList';
 
 const App = () => {
     console.log('App');
@@ -23,7 +22,7 @@ const App = () => {
         <div className="app">
             <AppDrawer lists={lists}/>
             <Switch>
-                <Route exact path={'/:listId?'} render={() => <TodoList />}/>
+                <Route exact path={'/:listId?'} render={() => <TodoList lists={lists} />}/>
             </Switch>
         </div>
     );

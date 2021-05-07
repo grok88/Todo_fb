@@ -5,7 +5,8 @@ import Drawer, {DrawerContent, DrawerHeader, DrawerTitle,} from '@material/react
 import List, {ListDivider, ListGroup, ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
 import {NavLink} from 'react-router-dom';
 
-export type ListsType = { title: string, id: string };
+export type ListsType = { title: string, id: string};
+
 type AppDrawerPropsType = {
     lists: Array<ListsType>
 }
