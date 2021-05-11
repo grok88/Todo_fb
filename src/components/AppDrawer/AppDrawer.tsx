@@ -1,6 +1,4 @@
 import React from 'react';
-// import {Drawer, DrawerContent, DrawerHeader, DrawerTitle} from 'mdc-react';
-// import  {ListDivider, ListGroup, ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
 import {NavLink} from 'react-router-dom';
 
 import {List, ListItem, Typography} from '@material-ui/core';
@@ -21,6 +19,7 @@ const useStyles = makeStyles({
         ['@media (max-width:600px)']: { // eslint-disable-line no-useless-computed-key
             borderRight: 'none',
             borderBottom: '1px solid #E0E0E0',
+            minHeight: 'auto',
         }
     }
 });
@@ -52,6 +51,7 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
 
     const handleItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
         setSelectedIndex(index);
+        setSelectedListIndex(3);
     };
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
         setSelectedListIndex(index);
@@ -69,7 +69,6 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
                         {title: 'Важно', icon: 'StarIcon', to: '/important'},
                         {title: 'Запланированные', icon: 'EventNoteIcon', to: '/planned'},
                     ].map((item, index) => {
-                        let Icon = item.icon;
                         return <ListItem
                             key={item.title}
                             button

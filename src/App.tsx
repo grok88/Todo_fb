@@ -35,10 +35,10 @@ const App = () => {
         <div className={classes.app}>
             <Container>
                 <Grid container className={classes.appContainer}>
-                    <Grid item xs={12} sm={4} md={3} xl={2}>
+                    <Grid item xs={12} sm={5} md={3} xl={2}>
                         <AppDrawer lists={lists}/>
                     </Grid>
-                    <Grid item xs={12} sm={8} md={9} xl={10}>
+                    <Grid item xs={12} sm={7} md={9} xl={10}>
                         <Switch>
                             <Route exact path={'/:listId?'} render={() => <TodoList lists={lists}/>}/>
                         </Switch>

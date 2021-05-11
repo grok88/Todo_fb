@@ -1,8 +1,7 @@
-import {ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
 import React from 'react';
-import Checkbox from '@material/react-checkbox';
-import {TodoType} from '../TodoList';
 
+import {TodoType} from '../TodoList';
+import {Checkbox, ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
 
 type TodoListItemPropsType = {
     todo: TodoType
@@ -11,9 +10,17 @@ type TodoListItemPropsType = {
 export const TodoListItem: React.FC<TodoListItemPropsType> = React.memo((props) => {
     const {todo, onStatusChange} = props;
     return (
-        <ListItem>
-            <ListItemGraphic graphic={<Checkbox checked={todo.completed} onChange={onStatusChange}/>}/>
-            <ListItemText primaryText={todo.title}/>
+        <ListItem key={todo.id} dense button onClick={onStatusChange}>
+            <ListItemIcon>
+                <Checkbox
+                    edge="start"
+                    checked={todo.completed}
+                    disableRipple
+                />
+            </ListItemIcon>
+            <ListItemText>
+                {todo.title}
+            </ListItemText>
         </ListItem>
     );
 });
