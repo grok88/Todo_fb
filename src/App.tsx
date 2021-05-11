@@ -12,6 +12,9 @@ const useStyles = makeStyles({
         // minHeight: '100vh',
         width: '100%'
     },
+    appContainer : {
+        outline:'1px solid red'
+    }
 });
 
 const App = () => {
@@ -31,11 +34,11 @@ const App = () => {
     return (
         <div className={classes.app}>
             <Container>
-                <Grid container>
-                    <Grid item xs={12} sm={4} md={2} xl={2}>
+                <Grid container className={classes.appContainer}>
+                    <Grid item xs={12} sm={4} md={3} xl={2}>
                         <AppDrawer lists={lists}/>
                     </Grid>
-                    <Grid item xs={12} sm={8} md={10} xl={10}>
+                    <Grid item xs={12} sm={8} md={9} xl={10}>
                         <Switch>
                             <Route exact path={'/:listId?'} render={() => <TodoList lists={lists}/>}/>
                         </Switch>

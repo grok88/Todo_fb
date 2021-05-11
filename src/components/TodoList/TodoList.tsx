@@ -50,7 +50,6 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
                     }
                 </List>
             </div>
-
         </AppContent>
     );
 });

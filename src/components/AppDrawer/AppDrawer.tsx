@@ -1,75 +1,109 @@
 import React from 'react';
 // import {Drawer, DrawerContent, DrawerHeader, DrawerTitle} from 'mdc-react';
-import MaterialIcon from '@material/react-material-icon';
-import Drawer, {DrawerContent, DrawerHeader, DrawerTitle,} from '@material/react-drawer';
-import List, {ListDivider, ListGroup, ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
+// import  {ListDivider, ListGroup, ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
 import {NavLink} from 'react-router-dom';
 
-import { Divider } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {List, ListItem, Typography} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import HomeIcon from '@material-ui/icons/Home';
+import StarIcon from '@material-ui/icons/Star';
+import EventNoteIcon from '@material-ui/icons/EventNote';
+import Divider from '@material-ui/core/Divider';
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
 const useStyles = makeStyles({
     appDrawer: {
-        borderRight:'1px solid #E0E0E0',
+        borderRight: '1px solid #E0E0E0',
         minHeight: '100vh',
+        padding: '5px 0',
         ['@media (max-width:600px)']: { // eslint-disable-line no-useless-computed-key
-          borderRight:'none',
-          borderBottom:'1px solid #E0E0E0',
+            borderRight: 'none',
+            borderBottom: '1px solid #E0E0E0',
         }
     }
 });
 
-export type ListsType = { title: string, id: string};
+export type ListsType = { title: string, id: string };
 
 type AppDrawerPropsType = {
     lists: Array<ListsType>
 }
+
+const getAvatarIcon = (icon) => {
+    switch (icon) {
+        case 'HomeIcon':
+            return (<HomeIcon/>);
+        case 'StarIcon':
+            return (<StarIcon/>);
+        case 'EventNoteIcon':
+            return (<EventNoteIcon/>);
+    }
+}
+
 const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
-    const {lists} = props;
     const classes = useStyles();
-    // console.log('AppDrawer');
-    // console.log(lists);
+    const {lists} = props;
+
+    //Selected nav main item
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
+    const [selectedListIndex, setSelectedListIndex] = React.useState(3);
+
+    const handleItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+        setSelectedIndex(index);
+    };
+    const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+        setSelectedListIndex(index);
+    };
 
     return (
         <div className={classes.appDrawer}>
-            <DrawerHeader>
-                <DrawerTitle tag='h2'>
-                    React Todo
-                </DrawerTitle>
-            </DrawerHeader>
-            <DrawerContent tag='main'>
-                <ListGroup>
-                    <List>
-                        {
-                            [
-                                {title: 'Задачи', icon: 'home', to: '/'},
-                                {title: 'Важно', icon: 'star', to: '/important'},
-                                {title: 'Запланированные', icon: 'event', to: '/planned'},
-                            ].map(item => <ListItem
-                                style={{marginBottom: '10px'}}
-                                key={item.title}
-                            >
-                                <NavLink to={item.to} style={{color: 'inherit', textDecoration: 'none'}}>
-                                    <ListItemGraphic graphic={<MaterialIcon icon={item.icon}/>}/>
-                                    <ListItemText primaryText={item.title}/>
-                                </NavLink>
-                            </ListItem>)
-                        }
-                    </List>
-                    <ListDivider tag={'div'}/>
-                    <List>
-                        {
-                            lists.map(item => <ListItem style={{marginBottom: '10px'}} key={item.id}>
-                                <NavLink to={`/${item.id}`} style={{color: 'inherit', textDecoration: 'none'}}>
-                                    <ListItemGraphic graphic={<MaterialIcon icon={'list'}/>}/>
-                                    <ListItemText primaryText={item.title}/>
-                                </NavLink>
-                            </ListItem>)
-                        }
-                    </List>
-                </ListGroup>
-            </DrawerContent>
-            {/*<Divider orientation={'vertical'}/>*/}
+            <Typography variant="h4" component="h1" style={{marginLeft: '16px'}}>
+                React Todo
+            </Typography>
+            <List component="nav">
+                {
+                    [
+                        {title: 'Задачи', icon: 'HomeIcon', to: '/'},
+                        {title: 'Важно', icon: 'StarIcon', to: '/important'},
+                        {title: 'Запланированные', icon: 'EventNoteIcon', to: '/planned'},
+                    ].map((item, index) => {
+                        let Icon = item.icon;
+                        return <ListItem
+                            key={item.title}
+                            button
+                            selected={selectedIndex === index}
+                            onClick={(event) => handleItemClick(event, index)}
+                            component={NavLink} to={item.to}
+                        >
+                            <ListItemIcon>
+                                {getAvatarIcon(item.icon)}
+                            </ListItemIcon>
+                            <ListItemText primary={item.title}/>
+                        </ListItem>
+                    })
+                }
+            </List>
+            <Divider/>
+            <List component="nav">
+                {
+                    lists.map((item, index) => {
+                        return <ListItem
+                            key={item.title}
+                            button
+                            selected={selectedListIndex === index}
+                            onClick={(event) => handleListItemClick(event, index)}
+                            component={NavLink} to={`/${item.id}`}
+                        >
+                            <ListItemIcon>
+                                <FormatListBulletedIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={item.title}/>
+                        </ListItem>
+                    })
+                }
+            </List>
         </div>
     )
 })
