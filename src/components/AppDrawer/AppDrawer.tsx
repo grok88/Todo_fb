@@ -5,6 +5,20 @@ import Drawer, {DrawerContent, DrawerHeader, DrawerTitle,} from '@material/react
 import List, {ListDivider, ListGroup, ListItem, ListItemGraphic, ListItemText} from '@material/react-list';
 import {NavLink} from 'react-router-dom';
 
+import { Divider } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+    appDrawer: {
+        borderRight:'1px solid #E0E0E0',
+        minHeight: '100vh',
+        ['@media (max-width:600px)']: { // eslint-disable-line no-useless-computed-key
+          borderRight:'none',
+          borderBottom:'1px solid #E0E0E0',
+        }
+    }
+});
+
 export type ListsType = { title: string, id: string};
 
 type AppDrawerPropsType = {
@@ -12,11 +26,12 @@ type AppDrawerPropsType = {
 }
 const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     const {lists} = props;
+    const classes = useStyles();
     // console.log('AppDrawer');
     // console.log(lists);
 
     return (
-        <Drawer className={'app-drawer'}>
+        <div className={classes.appDrawer}>
             <DrawerHeader>
                 <DrawerTitle tag='h2'>
                     React Todo
@@ -54,7 +69,8 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
                     </List>
                 </ListGroup>
             </DrawerContent>
-        </Drawer>
+            {/*<Divider orientation={'vertical'}/>*/}
+        </div>
     )
 })
 

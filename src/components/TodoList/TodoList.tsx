@@ -3,25 +3,24 @@ import {useParams} from 'react-router-dom';
 import AppContent from '../AppContent/AppContent';
 import {getCollection, getSortedCollection} from '../../api/api';
 import List from '@material/react-list';
-import Typography, {Headline3} from '@material/react-typography';
+import {Headline3} from '@material/react-typography';
 import {TodoListItem} from './TodoListItem/TodoListItem';
 import {ListsType} from '../AppDrawer/AppDrawer';
-import LinearProgress from '@material/react-linear-progress';
 
-export type TodoType = { title: string, id: string, listId: string , completed: boolean };
+export type TodoType = { title: string, id: string, listId: string, completed: boolean };
 
 type  ParamsType = {
     listId: string
 }
 type TodoListPropsType = {
     // todos:TodoType[]
-    lists:Array<ListsType>
+    lists: Array<ListsType>
 }
 export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
 
     const [todos, setTodos] = useState<Array<TodoType>>([]);
     const {listId} = useParams<ParamsType>();
-
+    console.log(todos)
     useEffect(() => {
         if (listId) {
             // @ts-ignore

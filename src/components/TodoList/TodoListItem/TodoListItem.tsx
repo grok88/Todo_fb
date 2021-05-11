@@ -10,6 +10,7 @@ type TodoListItemPropsType = {
 }
 export const TodoListItem: React.FC<TodoListItemPropsType> = React.memo((props) => {
     const {todo, onStatusChange} = props;
+    console.log(todo.title)
     return (
         <ListItem>
             <ListItemGraphic graphic={<Checkbox checked={todo.completed} onChange={onStatusChange}/>}/>
