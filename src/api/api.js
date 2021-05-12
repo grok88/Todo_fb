@@ -37,12 +37,17 @@ export function createTodo(data) {
         ...data,
         completed: false
     })
-        .then(docRef =>  docRef.get())
+        .then(docRef => docRef.get())
         .then(doc => ({
-            id:doc.id,
+            id: doc.id,
             ...doc.data()
         }))
         .catch((error) => {
             console.error("Error adding document: ", error);
         });
+}
+
+export function deleteTodoTask(todoId) {
+    return db.collection("todos").doc(todoId).delete()
+        .then(() => todoId);
 }

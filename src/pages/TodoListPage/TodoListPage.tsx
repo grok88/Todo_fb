@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 
-import {createTodo, getCollection, getSortedCollection} from '../../api/api';
+import {createTodo, deleteTodoTask, getCollection, getSortedCollection} from '../../api/api';
 import {TodoList} from '../../components/TodoList/TodoList';
 import {ListsType} from '../../components/AppDrawer/AppDrawer';
 import {TodoForm} from './TodoForm/TodoForm';
@@ -42,6 +42,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
 
     const list = props.lists.find(list => list.id === listId);
 
+    //Add new todoTask
     const onSubmitHandler = (title: string) => {
         const data = {
             title,
@@ -53,12 +54,20 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
             });
     }
 
+    //delete todo task by Id
+    const onDeleteTodo = (todoId: string) => {
+        deleteTodoTask(todoId)
+            .then(todoId => {
+                setTodos(todos.filter(todo => todo.id !== todoId))
+            })
+    }
+
     // if(!list ){
     //     return  <LinearProgress color="secondary" />
     // }
     return (
         <div className={classes.todoListPage}>
-            <TodoList list={list} todos={todos}/>
+            <TodoList list={list} todos={todos} onDeleteTodo={onDeleteTodo}/>
             <TodoForm onSubmitHandler={onSubmitHandler}/>
         </div>
     );
