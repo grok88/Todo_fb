@@ -59,7 +59,7 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
 
     return (
         <div className={classes.appDrawer}>
-            <Typography variant="h4" component="h1" style={{marginLeft: '16px'}}>
+            <Typography variant="h4" component="h1" style={{marginLeft: '16px'}} align={'center'}>
                 React Todo
             </Typography>
             <List component="nav">

@@ -1,28 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import React from 'react';
 import AppContent from '../AppContent/AppContent';
-import {getCollection, getSortedCollection} from '../../api/api';
 import {List, Typography} from '@material-ui/core';
 import {ListsType} from '../AppDrawer/AppDrawer';
 import {TodoListItem} from './TodoListItem/TodoListItem';
 
-
 export type TodoType = { title: string, id: string, listId: string, completed: boolean };
 
-type  ParamsType = {
-    listId: string
-}
 type TodoListPropsType = {
-    // todos:TodoType[]
     list?: ListsType
-    todos:Array<TodoType>
+    todos: Array<TodoType>
 }
 export const TodoList: React.FC<TodoListPropsType> = React.memo(({todos, list}) => {
-
+    console.log('TodoList');
     return (
         <AppContent>
             <div className={'todo-list'}>
-                <Typography variant="h3" component="h2" style={{margin: '16px'}}>
+                <Typography variant="h3" component="h2" style={{margin: '16px'}} align={'center'}>
                     {list && list.title}
                 </Typography>
                 <List>
