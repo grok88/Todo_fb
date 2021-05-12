@@ -6,6 +6,7 @@ import {Route, Switch} from 'react-router-dom';
 import {TodoList} from './components/TodoList/TodoList';
 import {Container, Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+import { TodoListPage } from './pages/TodoListPage/TodoListPage';
 
 const useStyles = makeStyles({
     app: {
@@ -40,7 +41,7 @@ const App = () => {
                     </Grid>
                     <Grid item xs={12} sm={7} md={9} xl={10}>
                         <Switch>
-                            <Route exact path={'/:listId?'} render={() => <TodoList lists={lists}/>}/>
+                            <Route exact path={'/:listId?'} render={() => <TodoListPage lists={lists}/>}/>
                         </Switch>
                     </Grid>
                 </Grid>

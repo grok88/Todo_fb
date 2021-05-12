@@ -14,37 +14,17 @@ type  ParamsType = {
 }
 type TodoListPropsType = {
     // todos:TodoType[]
-    lists: Array<ListsType>
+    list?: ListsType
+    todos:Array<TodoType>
 }
-export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
+export const TodoList: React.FC<TodoListPropsType> = React.memo(({todos, list}) => {
 
-    const [todos, setTodos] = useState<Array<TodoType>>([]);
-    const {listId} = useParams<ParamsType>();
-    console.log(todos)
-
-    useEffect(() => {
-        if (listId) {
-            // @ts-ignore
-            getSortedCollection('todos', 'listId', listId).then(setTodos);
-        } else {
-            // @ts-ignore
-            getCollection('todos').then(setTodos);
-        }
-    }, [listId]);
-
-    const list = props.lists.find(list => list.id === listId);
-
-
-    // if(!list ){
-    //     return  <LinearProgress color="secondary" />
-    // }
     return (
         <AppContent>
             <div className={'todo-list'}>
                 <Typography variant="h3" component="h2" style={{margin: '16px'}}>
                     {list && list.title}
                 </Typography>
-
                 <List>
                     {
                         todos.map(todo => {
