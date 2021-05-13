@@ -6,11 +6,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 type TodoListItemPropsType = {
     todo: TodoType
-    onStatusChange: () => void
+    onStatusChange: (value:boolean,todoId:string) => void
     onDeleteTodo:(todoId:string) => void
 }
 
 export const TodoListItem: React.FC<TodoListItemPropsType> = React.memo((props) => {
+    console.log('TodoListItem')
     const {todo, onStatusChange,onDeleteTodo} = props;
     return (
         <ListItem key={todo.id} dense  >
@@ -19,7 +20,7 @@ export const TodoListItem: React.FC<TodoListItemPropsType> = React.memo((props) 
                     edge="start"
                     checked={todo.completed}
                     disableRipple
-                    onClick={onStatusChange}
+                    onChange={(e) => onStatusChange(e.currentTarget.checked,todo.id)}
                 />
             </ListItemIcon>
             <ListItemText>

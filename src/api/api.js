@@ -51,3 +51,15 @@ export function deleteTodoTask(todoId) {
     return db.collection("todos").doc(todoId).delete()
         .then(() => todoId);
 }
+
+export function changeTodoTaskStatus(value, todoId) {
+    return db.collection("todos").doc(todoId)
+        .update({completed: value})
+        .then(() => {
+            console.log("Document successfully updated!");
+        })
+        .catch((error) => {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+        });
+}

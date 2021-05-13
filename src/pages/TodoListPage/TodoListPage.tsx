@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 
-import {createTodo, deleteTodoTask, getCollection, getSortedCollection} from '../../api/api';
+import {changeTodoTaskStatus, createTodo, deleteTodoTask, getCollection, getSortedCollection} from '../../api/api';
 import {TodoList} from '../../components/TodoList/TodoList';
 import {ListsType} from '../../components/AppDrawer/AppDrawer';
 import {TodoForm} from './TodoForm/TodoForm';
@@ -61,14 +61,24 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                 setTodos(todos.filter(todo => todo.id !== todoId))
             })
     }
+    // change todo task status
+    const onStatusChange = (value: boolean,todoId:string) => {
+        changeTodoTaskStatus(value,todoId)
+            .then(() => {
+                // @ts-ignore
+                getSortedCollection('todos', 'listId', listId).then(setTodos);
+                console.log('SUCCESS')
+            });
 
+    }
     // if(!list ){
     //     return  <LinearProgress color="secondary" />
     // }
     return (
         <div className={classes.todoListPage}>
-            <TodoList list={list} todos={todos} onDeleteTodo={onDeleteTodo}/>
+            <TodoList list={list} todos={todos} onDeleteTodo={onDeleteTodo} onStatusChange={onStatusChange}/>
             <TodoForm onSubmitHandler={onSubmitHandler}/>
         </div>
     );
 });
+
