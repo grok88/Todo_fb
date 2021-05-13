@@ -6,6 +6,7 @@ import {TodoList} from '../../components/TodoList/TodoList';
 import {ListsType} from '../../components/AppDrawer/AppDrawer';
 import {TodoForm} from './TodoForm/TodoForm';
 import {makeStyles} from '@material-ui/core/styles';
+import {TodoDetails} from '../../components/TodoDetails/TodoDetails';
 
 const useStyles = makeStyles({
     todoListPage: {
@@ -27,6 +28,8 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     const classes = useStyles();
 
     const [todos, setTodos] = useState<Array<TodoType>>([]);
+    const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
+    //Use params
     const {listId} = useParams<ParamsType>();
     console.log(todos)
 
@@ -58,26 +61,37 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     const onDeleteTodo = (todoId: string) => {
         deleteTodoTask(todoId)
             .then(todoId => {
-                setTodos(todos.filter(todo => todo.id !== todoId))
+                setTodos(todos.filter(todo => todo.id !== todoId));
+                setSelectedTodo(null);
             })
     }
     // change todo task status
-    const onStatusChange = (value: boolean,todoId:string) => {
-        changeTodoTaskStatus(value,todoId)
+    const onStatusChange = (value: boolean, todoId: string) => {
+        changeTodoTaskStatus(value, todoId)
             .then(() => {
                 // @ts-ignore
                 getSortedCollection('todos', 'listId', listId).then(setTodos);
                 console.log('SUCCESS')
             });
-
+    }
+    // onSelected todo for details
+    const onSelectedTodo = (todo: TodoType | null) => {
+        setSelectedTodo(todo);
     }
     // if(!list ){
     //     return  <LinearProgress color="secondary" />
     // }
     return (
         <div className={classes.todoListPage}>
-            <TodoList list={list} todos={todos} onDeleteTodo={onDeleteTodo} onStatusChange={onStatusChange}/>
+            <TodoList list={list} todos={todos}
+                      onSelectedTodo={onSelectedTodo}
+                      onDeleteTodo={onDeleteTodo} onStatusChange={onStatusChange}
+            />
             <TodoForm onSubmitHandler={onSubmitHandler}/>
+            {
+                selectedTodo && <TodoDetails todo={selectedTodo}  onSelectedTodo={onSelectedTodo}/>
+            }
+
         </div>
     );
 });

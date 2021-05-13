@@ -9,11 +9,13 @@ export type TodoType = { title: string, id: string, listId: string, completed: b
 type TodoListPropsType = {
     list?: ListsType
     todos: Array<TodoType>
-    onDeleteTodo:(todoId:string,) => void
-    onStatusChange: (value:boolean,todoId:string) => void
+    onDeleteTodo: (todoId: string,) => void
+    onStatusChange: (value: boolean, todoId: string) => void
+    onSelectedTodo: (todo: TodoType | null) => void
 }
-export const TodoList: React.FC<TodoListPropsType> = React.memo(({todos, list,onDeleteTodo,onStatusChange}) => {
+export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
     console.log('TodoList');
+    const {todos, list, onDeleteTodo, onStatusChange, onSelectedTodo} = props;
     return (
         <AppContent>
             <div className={'todo-list'}>
@@ -25,6 +27,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo(({todos, list,on
                         todos.map(todo => {
                             return <TodoListItem key={todo.id} todo={todo}
                                                  onDeleteTodo={onDeleteTodo}
+                                                 onSelectedTodo={onSelectedTodo}
                                                  onStatusChange={onStatusChange}/>
                         })
                     }
