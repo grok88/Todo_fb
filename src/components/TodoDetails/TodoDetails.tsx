@@ -2,7 +2,7 @@ import React from 'react';
 import {TodoType} from '../../pages/TodoListPage/TodoListPage';
 import CloseIcon from '@material-ui/icons/Close';
 import {makeStyles} from '@material-ui/core/styles';
-import {Typography} from '@material-ui/core';
+import {IconButton, Paper, Typography} from '@material-ui/core';
 
 type TodoDetailsPropsType = {
     todo: TodoType
@@ -11,20 +11,30 @@ type TodoDetailsPropsType = {
 
 const useStyles = makeStyles({
     todoDetails: {
-        outline: '1px solid red',
-        maxWidth: '300px'
+        // outline: '1px solid red',
+        // maxWidth: '300px',
+        padding:'10px',
+        // width:'100%'
+        // ['@media (max-width:960px)']: { // eslint-disable-line no-useless-computed-key
+        //    width:'100%',
+        //     color:'red'
+        // }
     }
 });
 
 export const TodoDetails: React.FC<TodoDetailsPropsType> = React.memo((props) => {
     const classes = useStyles();
     const {todo, onSelectedTodo} = props;
-    return <aside className={classes.todoDetails}>
-        <Typography variant="h4" component="h3" style={{}} align={'center'} >
-            Детали задачи
-            <CloseIcon onClick={() => onSelectedTodo(null)} style={{cursor: 'pointer'}} fontSize={'large'} />
-        </Typography>
-        {todo.title}
-
-    </aside>
+    return <Paper elevation={3} className={classes.todoDetails}>
+        <aside >
+            <Typography variant="h4" component="h3" style={{}} align={'center'} >
+                Детали задачи
+                <IconButton aria-label="delete" color="default"  onClick={() => onSelectedTodo(null)}>
+                    <CloseIcon  fontSize={'large'}/>
+                </IconButton>
+                {/*<CloseIcon onClick={() => onSelectedTodo(null)} style={{cursor: 'pointer'}} fontSize={'large'}/>*/}
+            </Typography>
+            {todo.title}
+        </aside>
+    </Paper>
 });

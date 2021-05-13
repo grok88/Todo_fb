@@ -7,10 +7,14 @@ import {ListsType} from '../../components/AppDrawer/AppDrawer';
 import {TodoForm} from './TodoForm/TodoForm';
 import {makeStyles} from '@material-ui/core/styles';
 import {TodoDetails} from '../../components/TodoDetails/TodoDetails';
+import {Grid} from '@material-ui/core';
 
 const useStyles = makeStyles({
     todoListPage: {
         padding: '10px'
+    },
+    todoContent:{
+        flexGrow: 1,
     }
 });
 
@@ -28,6 +32,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     const classes = useStyles();
 
     const [todos, setTodos] = useState<Array<TodoType>>([]);
+
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
     //Use params
     const {listId} = useParams<ParamsType>();
@@ -83,15 +88,20 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     // }
     return (
         <div className={classes.todoListPage}>
-            <TodoList list={list} todos={todos}
-                      onSelectedTodo={onSelectedTodo}
-                      onDeleteTodo={onDeleteTodo} onStatusChange={onStatusChange}
-            />
-            <TodoForm onSubmitHandler={onSubmitHandler}/>
-            {
-                selectedTodo && <TodoDetails todo={selectedTodo}  onSelectedTodo={onSelectedTodo}/>
-            }
-
+            <Grid container>
+                <Grid item className={classes.todoContent}>
+                    <TodoList list={list} todos={todos}
+                              onSelectedTodo={onSelectedTodo}
+                              onDeleteTodo={onDeleteTodo} onStatusChange={onStatusChange}
+                    />
+                    <TodoForm onSubmitHandler={onSubmitHandler}/>
+                </Grid>
+                <Grid item xs={12} sm={12} md={'auto'}>
+                    {
+                        selectedTodo && <TodoDetails todo={selectedTodo} onSelectedTodo={onSelectedTodo}/>
+                    }
+                </Grid>
+            </Grid>
         </div>
     );
 });

@@ -15,7 +15,7 @@ export const TodoListItem: React.FC<TodoListItemPropsType> = React.memo((props) 
     console.log('TodoListItem')
     const {todo, onStatusChange, onDeleteTodo, onSelectedTodo} = props;
     return (
-        <ListItem key={todo.id} dense button>
+        <ListItem key={todo.id} dense button >
             <ListItemIcon>
                 <Checkbox
                     edge="start"
