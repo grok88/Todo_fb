@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import './app.scss';
 import AppDrawer, {ListsType} from './components/AppDrawer/AppDrawer';
-import {getCollection} from './api/api';
+import {checkUserAuth, getCollection} from './api/api';
 import {Route, Switch} from 'react-router-dom';
 import {Container, Grid} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import {TodoListPage} from './pages/TodoListPage/TodoListPage';
+import {LoginPage} from './pages/LoginPage/LoginPage';
+import firebase from 'firebase';
 
 const useStyles = makeStyles({
     app: {
@@ -22,12 +24,35 @@ const App = () => {
     const classes = useStyles();
 
     const [lists, setLists] = useState<Array<ListsType>>([]);
+    const [user, setUser] = useState<null | any>(null);
+    console.log(user);
 
     useEffect(() => {
         // @ts-ignore
         getCollection('lists').then(setLists);
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/firebase.User
+                const uid = user.uid;
+                const email = user.email;
+                const name = user.displayName;
+                setUser({
+                    uid,
+                    email,
+                    name,
+                })
+            } else {
+                // User is signed out
+                // ...
+            }
+        })
     }, []);
 
+    if (!user) {
+        return <LoginPage/>
+    }
     return (
         <div className={classes.app}>
             <Container>
@@ -38,9 +63,10 @@ const App = () => {
                     <Grid item xs={12} sm={7} md={9} xl={10}>
                         <Switch>
                             <Route exact path={'/'} render={() => <TodoListPage lists={lists}/>}/>
+                            <Route exact path={'/login'} render={() => <LoginPage/>}/>
                             <Route exact path={'/important'} render={() => <TodoListPage lists={lists}/>}/>
                             <Route exact path={'/planned'} render={() => <TodoListPage lists={lists}/>}/>
-                            <Route  path={'/:listId/:todoId?'} render={() => <TodoListPage lists={lists}/>}/>
+                            <Route path={'/:listId/:todoId?'} render={() => <TodoListPage lists={lists}/>}/>
                         </Switch>
                     </Grid>
                 </Grid>

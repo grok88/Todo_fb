@@ -37,7 +37,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
     //Use params
     const {listId,todoId} = useParams<ParamsType>();
-    console.log(todos)
+    console.log(todos,todoId)
 
     useEffect(() => {
         if (listId) {
@@ -49,7 +49,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
         }
     }, [listId]);
 
-    const list = useMemo(() => props.lists.find(list => list.id === listId), [listId]);
+    const list = useMemo(() => props.lists.find(list => list.id === listId), [props.lists,listId]);
 
     //Add new todoTask
     const onSubmitHandler = (title: string) => {
@@ -84,7 +84,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     const onSelectedTodo = (todo: TodoType | null) => {
         setSelectedTodo(todo);
     }
-    if(!list ){
+    if(!list || !todos){
         return  <LinearProgress color="secondary" />
     }
     return (
