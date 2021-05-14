@@ -37,7 +37,10 @@ const App = () => {
                     </Grid>
                     <Grid item xs={12} sm={7} md={9} xl={10}>
                         <Switch>
-                            <Route exact path={'/:listId?'} render={() => <TodoListPage lists={lists}/>}/>
+                            <Route exact path={'/'} render={() => <TodoListPage lists={lists}/>}/>
+                            <Route exact path={'/important'} render={() => <TodoListPage lists={lists}/>}/>
+                            <Route exact path={'/planned'} render={() => <TodoListPage lists={lists}/>}/>
+                            <Route  path={'/:listId/:todoId?'} render={() => <TodoListPage lists={lists}/>}/>
                         </Switch>
                     </Grid>
                 </Grid>

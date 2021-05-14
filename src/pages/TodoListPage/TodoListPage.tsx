@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useParams} from 'react-router-dom';
 
 import {changeTodoTaskStatus, createTodo, deleteTodoTask, getCollection, getSortedCollection} from '../../api/api';
@@ -7,7 +7,7 @@ import {ListsType} from '../../components/AppDrawer/AppDrawer';
 import {TodoForm} from './TodoForm/TodoForm';
 import {makeStyles} from '@material-ui/core/styles';
 import {TodoDetails} from '../../components/TodoDetails/TodoDetails';
-import {Grid} from '@material-ui/core';
+import {Grid, LinearProgress} from '@material-ui/core';
 
 const useStyles = makeStyles({
     todoListPage: {
@@ -22,6 +22,7 @@ export type TodoType = { title: string, id: string, listId: string, completed: b
 
 type  ParamsType = {
     listId: string
+    todoId:string
 }
 type TodoListPagePropsType = {
     // todos:TodoType[]
@@ -35,7 +36,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
 
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
     //Use params
-    const {listId} = useParams<ParamsType>();
+    const {listId,todoId} = useParams<ParamsType>();
     console.log(todos)
 
     useEffect(() => {
@@ -48,7 +49,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
         }
     }, [listId]);
 
-    const list = props.lists.find(list => list.id === listId);
+    const list = useMemo(() => props.lists.find(list => list.id === listId), [listId]);
 
     //Add new todoTask
     const onSubmitHandler = (title: string) => {
@@ -76,16 +77,16 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
             .then(() => {
                 // @ts-ignore
                 getSortedCollection('todos', 'listId', listId).then(setTodos);
-                console.log('SUCCESS')
+                // console.log('SUCCESS')
             });
     }
     // onSelected todo for details
     const onSelectedTodo = (todo: TodoType | null) => {
         setSelectedTodo(todo);
     }
-    // if(!list ){
-    //     return  <LinearProgress color="secondary" />
-    // }
+    if(!list ){
+        return  <LinearProgress color="secondary" />
+    }
     return (
         <div className={classes.todoListPage}>
             <Grid container>
