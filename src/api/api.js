@@ -1,5 +1,4 @@
 import {db} from "../firebase";
-import firebase from 'firebase';
 
 export function getCollection(collection) {
     return db.collection(collection)
@@ -65,38 +64,12 @@ export function changeTodoTaskStatus(value, todoId) {
         });
 }
 
-export function loginByPassword(email, password) {
-    return firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => console.log('User is Login'))
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage)
-        });
-}
-
-export function checkUserAuth() {
-    return firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/firebase.User
-            const uid = user.uid;
-            const email = user.email;
-            const name = user.displayName;
-            console.log({
-                uid,
-                email,
-                name,
-            })
-            return {
-                uid,
-                email,
-                name,
-            }
-            // ...
-        } else {
-            // User is signed out
-            // ...
-        }
-    })
-}
+// export function loginByPassword(email, password) {
+//     return firebase.auth().signInWithEmailAndPassword(email, password)
+//         .then(() => console.log('User is Login'))
+//         .catch((error) => {
+//             const errorCode = error.code;
+//             const errorMessage = error.message;
+//             console.log(errorCode, errorMessage)
+//         });
+// }

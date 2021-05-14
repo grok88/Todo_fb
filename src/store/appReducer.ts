@@ -5,8 +5,6 @@ import {AppRootStateType, TodoActionsType} from './store';
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed';
 
 const initialState = {
-    user: null as null,
-    isAuth: false,
     error: null as null | string,
     status: 'idle' as RequestStatusType,
 }
@@ -15,16 +13,6 @@ export type InitialAppStateType = typeof initialState;
 
 export const appReducer = (state: InitialAppStateType = initialState, action: AppActionsType): InitialAppStateType => {
     switch (action.type) {
-        case 'APP/SET-USER':
-            return {
-                ...state,
-                user: action.payload
-            }
-        case 'APP/CHANGE-ISAUTH':
-            return {
-                ...state,
-                isAuth: action.payload
-            }
         case 'APP/SET-ERROR':
             return {
                 ...state,
@@ -40,13 +28,7 @@ export const appReducer = (state: InitialAppStateType = initialState, action: Ap
     }
 
 }
-//user
-export const setUser = (user: any | null) => {
-    return {
-        type: 'APP/SET-USER',
-        payload: user
-    } as const
-}
+
 export const changeStatus = (status: RequestStatusType) => {
     return {
         type: 'APP/CHANGE-STATUS',
@@ -60,12 +42,7 @@ export const setError = (error: null | string) => {
         payload: error
     } as const
 }
-export const changeIsAuth = (isAuth: boolean) => {
-    return {
-        type: 'APP/CHANGE-ISAUTH',
-        payload: isAuth
-    } as const
-}
+
 
 //thunks
 export const logoutUser = (link: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
@@ -75,8 +52,8 @@ export const logoutUser = (link: string) => async (dispatch: ThunkDispatch<AppRo
         // await API.logout(link, session_id);
 
         dispatch(changeStatus('succeeded'));
-        dispatch(setUser(null));
-        dispatch(changeIsAuth(false));
+        // dispatch(setUser(null));
+        // dispatch(changeIsAuth(false));
         // dispatch(changeDisabled(false));
     } catch (e) {
         dispatch(changeStatus('failed'));
@@ -86,20 +63,14 @@ export const logoutUser = (link: string) => async (dispatch: ThunkDispatch<AppRo
         setTimeout(() => {
             dispatch(setError(null));
         }, 3000);
-    }
-    ;
+    };
 }
 
 
 //types
-type SetUserAC = ReturnType<typeof setUser>
 type ChangeStatusAC = ReturnType<typeof changeStatus>
-type ChangeIsAuthAC = ReturnType<typeof changeIsAuth>
 type SetErrorAC = ReturnType<typeof setError>
 
-
 export type AppActionsType =
-    SetUserAC
     | ChangeStatusAC
-    | ChangeIsAuthAC
     | SetErrorAC;

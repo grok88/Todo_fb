@@ -10,6 +10,8 @@ import StarIcon from '@material-ui/icons/Star';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import Divider from '@material-ui/core/Divider';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import {useSelector} from 'react-redux';
+import {AppRootStateType} from '../../store/store';
 
 const useStyles = makeStyles({
     appDrawer: {
@@ -45,6 +47,8 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     const classes = useStyles();
     const {lists} = props;
 
+    const email = useSelector<AppRootStateType, string>(state => state.auth.user.email);
+
     //Selected nav main item
     const [selectedIndex, setSelectedIndex] = React.useState(0);
     const [selectedListIndex, setSelectedListIndex] = React.useState(3);
@@ -62,6 +66,9 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
             <Typography variant="h4" component="h1" style={{marginLeft: '16px'}} align={'center'}>
                 React Todo
             </Typography>
+            {
+                email && <div style={{textAlign: 'center'}}>{email}</div>
+            }
             <List component="nav">
                 {
                     [
