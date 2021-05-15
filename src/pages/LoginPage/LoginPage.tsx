@@ -1,19 +1,20 @@
-import React, {FormEvent} from 'react';
+import React from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {loginByPassword} from '../../store/authReducer';
 import {AppRootStateType} from '../../store/store';
-import {Button, Container, Paper, TextField, Typography} from '@material-ui/core';
+import {Button, Container, Paper, Snackbar, TextField, Typography} from '@material-ui/core';
 
 import MuiAlert, {AlertProps} from '@material-ui/lab/Alert';
 import {setError} from '../../store/appReducer';
 import {makeStyles} from '@material-ui/core/styles';
 import {NavLink} from 'react-router-dom';
+import {useFormik} from 'formik';
+import {loginByPassword} from '../../store/authReducer';
+
 
 function Alert(props: AlertProps) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-
 
 const useStyles = makeStyles((theme) => ({
     loginBlock: {
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     },
     submitReg: {
         background: '#2e7d32',
-        color:'white',
+        color: 'white',
         '&:hover': {
             backgroundColor: '#135e13',
             boxShadow: 'none',
@@ -70,21 +71,55 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 400,
         fontFamily: 'Roboto',
         lineHeight: ' 1.5em',
-        margin:0
+        margin: 0
     }
 }));
 
+type ValuesPropsType = {
+    email: string
+    password: string
+}
+type ErrorsType = {
+    email?: string
+    password?: string
+}
+// FORMIK VALIDATION
+const validate = (values: ValuesPropsType) => {
+    const errors: ErrorsType = {};
+
+    if (!values.password) {
+        errors.password = 'Required';
+    } else if (values.password.length <= 5) {
+        errors.password = 'Must be 6 characters or more';
+    }
+
+    if (!values.email) {
+        errors.email = 'Required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+        errors.email = 'Invalid email address';
+    }
+
+    return errors;
+};
+
 export const LoginPage: React.FC = React.memo(() => {
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+        validate,
+        onSubmit: (values: ValuesPropsType) => {
+            dispatch(loginByPassword(values.email, values.password));
+            // alert(JSON.stringify(values, null, 2));
+            formik.resetForm();
+            // dispatch(loginByPassword('grok88@tut.by', 'thisissparta'));
+        },
+    });
+
     const classes = useStyles();
     const dispatch = useDispatch();
     const error = useSelector<AppRootStateType, null | string>(state => state.app.error);
-
-    const submitHandler = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log('Submit');
-        dispatch(loginByPassword('grok88@tut.by', 'thisissparta'));
-        // loginByPassword('grok88@tut.by', 'thisissparta');
-    }
 
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
         if (reason === 'clickaway') {
@@ -101,38 +136,25 @@ export const LoginPage: React.FC = React.memo(() => {
                     <Typography component="h3" variant="h5" className={classes.loginContentTitle}>
                         Log into your account
                     </Typography>
-                    <form className={classes.form}>
-                        <TextField id="standard-search" label="Email Address"
-                                   type="email" required fullWidth
-                                   name="email"
-                                   // autoFocus
-                                   helperText={'The field is empty'}
-                                   // error
+                    <form className={classes.form} onSubmit={formik.handleSubmit}>
+                        <TextField
+                            id="email"
+                            label="Email Address"
+                            type="email"
+                            {...formik.getFieldProps('email')}
+                            fullWidth
+                            error={formik.touched.email && Boolean(formik.errors.email)}
+                            helperText={formik.touched.email && formik.errors.email}
                         />
-                        <TextField id="standard-search" label="Password" type="password" required fullWidth
-                                   name="password" style={{marginTop: '8px'}}/>
-                        {/*<TextField*/}
-                        {/*    variant="outlined"*/}
-                        {/*    margin="normal"*/}
-                        {/*    required*/}
-                        {/*    fullWidth*/}
-                        {/*    id="email"*/}
-                        {/*    label="Email Address"*/}
-                        {/*    name="email"*/}
-                        {/*    autoComplete="email"*/}
-                        {/*    autoFocus*/}
-                        {/*/>*/}
-                        {/*<TextField*/}
-                        {/*    variant="outlined"*/}
-                        {/*    margin="normal"*/}
-                        {/*    required*/}
-                        {/*    fullWidth*/}
-                        {/*    name="password"*/}
-                        {/*    label="Password"*/}
-                        {/*    type="password"*/}
-                        {/*    id="password"*/}
-                        {/*    autoComplete="current-password"*/}
-                        {/*/>*/}
+                        <TextField id="password"
+                                   label="Password"
+                                   type=" password"
+                                   fullWidth
+                                   {...formik.getFieldProps('password')}
+                                   style={{marginTop: '8px'}}
+                                   error={formik.touched.password && Boolean(formik.errors.password)}
+                                   helperText={formik.touched.password && formik.errors.password}
+                        />
                         <Button
                             type="submit"
                             fullWidth
@@ -140,10 +162,9 @@ export const LoginPage: React.FC = React.memo(() => {
                             color="primary"
                             className={classes.submit}
                         >Sign In</Button>
-                        <div style={{textAlign: 'center', margin:'0'}}>
+                        <div style={{textAlign: 'center', margin: '0'}}>
                             <p className={classes.text}> {'Don\'t have an account? Sign Up'}</p>
                         </div>
-
                         <Button
                             type="submit"
                             fullWidth
@@ -154,20 +175,12 @@ export const LoginPage: React.FC = React.memo(() => {
                         >Register</Button>
                     </form>
                 </div>
+                <Snackbar open={error !== null} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="error">
+                        {error}
+                    </Alert>
+                </Snackbar>
             </Paper>
         </div>
-        {/*<h1>Форма входа</h1>*/}
-        {/*<form onSubmit={submitHandler}>*/}
-        {/*    <input type="text"/>*/}
-        {/*    <br/>*/}
-        {/*    <input type="password"/>*/}
-        {/*    <br/>*/}
-        {/*    <button type={'submit'}>Войти</button>*/}
-        {/*</form>*/}
-        {/*<Snackbar open={error !== null} autoHideDuration={6000} onClose={handleClose}>*/}
-        {/*    <Alert onClose={handleClose} severity="error">*/}
-        {/*        {error}*/}
-        {/*    </Alert>*/}
-        {/*</Snackbar>*/}
     </Container>
 });
