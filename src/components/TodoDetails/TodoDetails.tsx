@@ -11,6 +11,7 @@ type TodoDetailsPropsType = {
 
 const useStyles = makeStyles({
     todoDetails: {
+        height:'inherit',
         // outline: '1px solid red',
         // maxWidth: '300px',
         padding:'10px',

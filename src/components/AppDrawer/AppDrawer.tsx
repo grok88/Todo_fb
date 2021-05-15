@@ -10,8 +10,11 @@ import StarIcon from '@material-ui/icons/Star';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import Divider from '@material-ui/core/Divider';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from '../../store/store';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import IconButton from '@material-ui/core/IconButton';
+import {logOut} from '../../store/authReducer';
 
 const useStyles = makeStyles({
     appDrawer: {
@@ -47,7 +50,10 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     const classes = useStyles();
     const {lists} = props;
 
-    const email = useSelector<AppRootStateType, string>(state => state.auth.user.email);
+
+    const email = useSelector<AppRootStateType, any>(state => state.auth.user?.email);
+    const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isAuth);
+    const dispatch = useDispatch();
 
     //Selected nav main item
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -61,13 +67,26 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
         setSelectedListIndex(index);
     };
 
+    //logout
+    const onLogOut = () => {
+        dispatch(logOut());
+    }
     return (
         <div className={classes.appDrawer}>
             <Typography variant="h4" component="h1" style={{marginLeft: '16px'}} align={'center'}>
                 React Todo
             </Typography>
             {
-                email && <div style={{textAlign: 'center'}}>{email}</div>
+                isAuth && <List>
+                    <ListItem>
+                        {/*<div style={{textAlign: 'center'}}>*/}
+                        {email}
+                        <IconButton aria-label="logout" onClick={onLogOut}>
+                            <ExitToAppIcon/>
+                        </IconButton>
+                        {/*</div>*/}
+                    </ListItem>
+                </List>
             }
             <List component="nav">
                 {

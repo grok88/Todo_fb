@@ -1,4 +1,5 @@
 import {db} from "../firebase";
+import firebase from "firebase";
 
 export function getCollection(collection) {
     return db.collection(collection)
@@ -62,6 +63,16 @@ export function changeTodoTaskStatus(value, todoId) {
             // The document probably doesn't exist.
             console.error("Error updating document: ", error);
         });
+}
+
+//AUTH
+export const authAPI = {
+    loginByPassword(email, password) {
+        return firebase.auth().signInWithEmailAndPassword(email, password);
+    },
+    logOut() {
+        return firebase.auth().signOut();
+    }
 }
 
 // export function loginByPassword(email, password) {

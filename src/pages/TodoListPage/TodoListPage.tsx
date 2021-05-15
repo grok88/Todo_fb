@@ -11,7 +11,7 @@ import {Grid, LinearProgress} from '@material-ui/core';
 
 const useStyles = makeStyles({
     todoListPage: {
-        padding: '10px'
+        padding: '10px',
     },
     todoContent:{
         flexGrow: 1,

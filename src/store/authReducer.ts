@@ -2,9 +2,15 @@ import {ThunkDispatch} from 'redux-thunk';
 import {changeStatus, setError} from './appReducer';
 import {AppRootStateType, TodoActionsType} from './store';
 import firebase from 'firebase';
+import {authAPI} from '../api/api';
 
+export type UserType = {
+    uid: string
+    email: null | string
+    name: null | string
+}
 const initialState = {
-    user: null as null | any,
+    user: null as null | UserType,
     isAuth: false,
 }
 
@@ -28,7 +34,7 @@ export const authReducer = (state: InitialAuthStateType = initialState, action: 
 
 }
 //user
-export const setUser = (user: any | null) => {
+export const setUser = (user: UserType | null) => {
     return {
         type: 'APP/SET-USER',
         payload: user
@@ -62,6 +68,7 @@ export const checkUserIsAuth = () => async (dispatch: ThunkDispatch<AppRootState
                 }));
                 dispatch(changeIsAuth(true));
             } else {
+                dispatch(setUser(null));
                 dispatch(changeIsAuth(false));
                 dispatch(changeStatus('failed'));
             }
@@ -75,7 +82,8 @@ export const loginByPassword = (email: string, password: string) => async (dispa
 
     dispatch(changeStatus('loading'));
     try {
-        await firebase.auth().signInWithEmailAndPassword(email, password)
+        await authAPI.loginByPassword(email, password);
+        // firebase.auth().signInWithEmailAndPassword(email, password)
         dispatch(changeStatus('succeeded'));
         dispatch(changeIsAuth(true));
     } catch (error) {
@@ -89,7 +97,21 @@ export const loginByPassword = (email: string, password: string) => async (dispa
         //     dispatch(setError(null));
         // }, 3000);
     }
-    ;
+}
+export const logOut = () => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
+
+    dispatch(changeStatus('loading'));
+    try {
+        await authAPI.logOut();
+        dispatch(changeStatus('succeeded'));
+        dispatch(changeIsAuth(false));
+    } catch (error) {
+        dispatch(changeStatus('failed'));
+        //ser LoginForm serverError
+        // const errorCode = error.code;
+        const errorMessage = error.message;
+        dispatch(setError(errorMessage));
+    }
 }
 
 //types
