@@ -1,9 +1,25 @@
 import {db} from "../firebase";
 import firebase from "firebase";
 
-export function getCollection(collection) {
-    return db.collection(collection)
-        // .where('capital', '==', true)
+export function getLists(userId) {
+    return db.collection('lists')
+        .where('userId', '==', userId)
+        .get()
+        .then((snapshot) => {
+            const items = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }))
+            return items;
+        })
+        .catch((error) => {
+            console.log('Error getting documents: ', error);
+        });
+}
+export function getTodos(userId='') {
+    return db.collection('todos')
+        .where('listId', '==', '')
+        .where('userId', '==', userId)
         .get()
         .then((snapshot) => {
             const items = snapshot.docs.map(doc => ({
@@ -33,10 +49,12 @@ export function getSortedCollection(collection, sortBy, value) {
         });
 }
 
-export function createTodo(data) {
+export function  createTodo(data) {
     return db.collection("todos").add({
         ...data,
-        completed: false
+        completed: false,
+        notes:'',
+        steps:[]
     })
         .then(docRef => docRef.get())
         .then(doc => ({

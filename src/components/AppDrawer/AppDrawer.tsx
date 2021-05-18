@@ -1,5 +1,5 @@
 import React from 'react';
-import {NavLink} from 'react-router-dom';
+import {NavLink, useHistory} from 'react-router-dom';
 
 import {List, ListItem, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
@@ -49,6 +49,7 @@ const getAvatarIcon = (icon) => {
 const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     const classes = useStyles();
     const {lists} = props;
+    console.log(lists)
 
 
     const email = useSelector<AppRootStateType, any>(state => state.auth.user?.email);
@@ -58,6 +59,8 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     //Selected nav main item
     const [selectedIndex, setSelectedIndex] = React.useState(0);
     const [selectedListIndex, setSelectedListIndex] = React.useState(3);
+
+    const history = useHistory();
 
     const handleItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
         setSelectedIndex(index);
@@ -70,6 +73,7 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     //logout
     const onLogOut = () => {
         dispatch(logOut());
+        history.push('/');
     }
     return (
         <div className={classes.appDrawer}>
@@ -79,12 +83,10 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
             {
                 isAuth && <List>
                     <ListItem>
-                        {/*<div style={{textAlign: 'center'}}>*/}
                         {email}
                         <IconButton aria-label="logout" onClick={onLogOut}>
                             <ExitToAppIcon/>
                         </IconButton>
-                        {/*</div>*/}
                     </ListItem>
                 </List>
             }

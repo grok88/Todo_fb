@@ -12,22 +12,29 @@ export type UserType = {
 const initialState = {
     user: null as null | UserType,
     isAuth: false,
+    isRegister: false,
 }
 
 export type InitialAuthStateType = typeof initialState;
 
 export const authReducer = (state: InitialAuthStateType = initialState, action: AuthActionsType): InitialAuthStateType => {
     switch (action.type) {
-        case 'APP/SET-USER':
+        case 'AUTH/SET-USER':
             return {
                 ...state,
                 user: action.payload
             }
-        case 'APP/CHANGE-ISAUTH':
+        case 'AUTH/CHANGE-ISAUTH':
             return {
                 ...state,
                 isAuth: action.payload
             }
+        case 'AUTH/CHANGE-IS-REGISTER': {
+            return {
+                ...state,
+                isRegister: action.payload
+            }
+        }
         default:
             return state;
     }
@@ -36,24 +43,31 @@ export const authReducer = (state: InitialAuthStateType = initialState, action: 
 //user
 export const setUser = (user: UserType | null) => {
     return {
-        type: 'APP/SET-USER',
+        type: 'AUTH/SET-USER',
         payload: user
     } as const
 }
 
 export const changeIsAuth = (isAuth: boolean) => {
     return {
-        type: 'APP/CHANGE-ISAUTH',
+        type: 'AUTH/CHANGE-ISAUTH',
         payload: isAuth
+    } as const
+}
+export const changeIsRegister = (isRegister: boolean) => {
+    return {
+        type: 'AUTH/CHANGE-IS-REGISTER',
+        payload: isRegister
     } as const
 }
 
 //thunks
 export const checkUserIsAuth = () => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
     dispatch(changeStatus('loading'));
+    const isRegister = getState().auth.isRegister;
     try {
         firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
+            if (user ) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 const uid = user.uid;
@@ -67,10 +81,11 @@ export const checkUserIsAuth = () => async (dispatch: ThunkDispatch<AppRootState
                     name,
                 }));
                 dispatch(changeIsAuth(true));
+
             } else {
-                dispatch(setUser(null));
-                dispatch(changeIsAuth(false));
-                dispatch(changeStatus('failed'));
+                // dispatch(setUser(null));
+                // dispatch(changeIsAuth(false));
+                // dispatch(changeStatus('failed'));
             }
         })
     } catch (e) {
@@ -78,7 +93,7 @@ export const checkUserIsAuth = () => async (dispatch: ThunkDispatch<AppRootState
     }
 }
 
-export const loginByPassword = (email: string, password: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
+export const logIn = (email: string, password: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
 
     dispatch(changeStatus('loading'));
     try {
@@ -99,12 +114,13 @@ export const loginByPassword = (email: string, password: string) => async (dispa
     }
 }
 export const logOut = () => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
-
     dispatch(changeStatus('loading'));
     try {
         await authAPI.logOut();
         dispatch(changeStatus('succeeded'));
         dispatch(changeIsAuth(false));
+        dispatch(changeIsRegister(false));
+        dispatch(setUser(null));
     } catch (error) {
         dispatch(changeStatus('failed'));
         //ser LoginForm serverError
@@ -113,11 +129,29 @@ export const logOut = () => async (dispatch: ThunkDispatch<AppRootStateType, unk
         dispatch(setError(errorMessage));
     }
 }
+export const registerUser = (email: string, password: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
+    dispatch(changeStatus('loading'));
+    try {
+        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        dispatch(changeIsRegister(true));
+        dispatch(changeStatus('succeeded'));
+    } catch (error) {
+        dispatch(changeStatus('failed'));
+        //ser LoginForm serverError
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage)
+        dispatch(setError(errorMessage));
+    }
+}
 
 //types
 type SetUserAC = ReturnType<typeof setUser>
 type ChangeIsAuthAC = ReturnType<typeof changeIsAuth>
+type ChangeIsRegisterAC = ReturnType<typeof changeIsRegister>
 
 export type AuthActionsType =
     SetUserAC
-    | ChangeIsAuthAC;
+    | ChangeIsAuthAC
+    | ChangeIsRegisterAC;
