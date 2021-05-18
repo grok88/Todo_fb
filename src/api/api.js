@@ -71,9 +71,9 @@ export function deleteTodoTask(todoId) {
         .then(() => todoId);
 }
 
-export function changeTodoTaskStatus(value, todoId) {
+export function updateTodo(data, todoId) {
     return db.collection("todos").doc(todoId)
-        .update({completed: value})
+        .update(data)
         .then(() => {
             // console.log("Document successfully updated!");
         })

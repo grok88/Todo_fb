@@ -1,13 +1,13 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useParams} from 'react-router-dom';
 
-import {changeTodoTaskStatus, createTodo, deleteTodoTask, getSortedCollection, getTodos} from '../../api/api';
-import {TodoList} from '../../components/TodoList/TodoList';
+import {createTodo, deleteTodoTask, getSortedCollection, getTodos, updateTodo} from '../../api/api';
+import {TodoList, TodoType} from '../../components/TodoList/TodoList';
 import {ListsType} from '../../components/AppDrawer/AppDrawer';
 import {TodoForm} from './TodoForm/TodoForm';
 import {makeStyles} from '@material-ui/core/styles';
 import {TodoDetails} from '../../components/TodoDetails/TodoDetails';
-import {Grid, LinearProgress} from '@material-ui/core';
+import {Grid} from '@material-ui/core';
 import {useSelector} from 'react-redux';
 import {AppRootStateType} from '../../store/store';
 import {UserType} from '../../store/authReducer';
@@ -16,16 +16,16 @@ const useStyles = makeStyles({
     todoListPage: {
         padding: '10px',
     },
-    todoContent:{
+    todoContent: {
         flexGrow: 1,
     }
 });
 
-export type TodoType = { title: string, id: string, listId: string, completed: boolean };
+// export type TodoType = { title: string, id: string, listId: string, completed: boolean };
 
 type  ParamsType = {
     listId: string
-    todoId:string
+    todoId: string
 }
 type TodoListPagePropsType = {
     // todos:TodoType[]
@@ -41,7 +41,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     console.log(todos)
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
     //Use params
-    const {listId,todoId} = useParams<ParamsType>();
+    const {listId, todoId} = useParams<ParamsType>();
     console.log(listId)
 
     useEffect(() => {
@@ -54,15 +54,15 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
         }
     }, [listId]);
 
-    const list = useMemo(() => props.lists.find(list => list.id === listId), [props.lists,listId]) ;
+    const list = useMemo(() => props.lists.find(list => list.id === listId), [props.lists, listId]);
 
     //Add new todoTask
     const onSubmitHandler = (title: string) => {
         const data = {
             title,
             listId: list?.id ? list?.id : '',
-            userId:user?.uid,
-            dueDate:null
+            userId: user?.uid,
+            dueDate: null
         }
         console.log(data)
         createTodo(data)
@@ -80,8 +80,8 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
             })
     }
     // change todo task status
-    const onStatusChange = (value: boolean, todoId: string) => {
-        changeTodoTaskStatus(value, todoId)
+    const onUpdate = (value: boolean, todoId: string) => {
+        updateTodo({completed: value}, todoId)
             .then(() => {
                 // @ts-ignore
                 getSortedCollection('todos', 'listId', listId).then(setTodos);
@@ -101,7 +101,10 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                 <Grid item className={classes.todoContent}>
                     <TodoList list={list} todos={todos}
                               onSelectedTodo={onSelectedTodo}
-                              onDeleteTodo={onDeleteTodo} onStatusChange={onStatusChange}
+                              onDeleteTodo={onDeleteTodo}
+                              onStatusChange={onUpdate}
+                              onUpdateImportant={() => {}}
+
                     />
                     <TodoForm onSubmitHandler={onSubmitHandler}/>
                 </Grid>

@@ -64,13 +64,13 @@ const App = () => {
                     status === 'loading' ? <LinearProgress color="secondary"/> : ''
                 }
                 <Grid container className={classes.appContainer}>
-                    <Grid item xs={12} sm={5} md={3} xl={2}>
+                    <Grid item xs={12} sm={5} md={3} xl={3}>
                         <AppDrawer lists={lists}/>
                     </Grid>
-                    <Grid item xs={12} sm={7} md={9} xl={10}>
+                    <Grid item xs={12} sm={7} md={9} xl={9}>
                         <Switch>
                             <Route exact path={'/'} render={() => <TodoListPage lists={lists}/>}/>
-                            <Route path={'/login'} render={() => <LoginPage/>}/>
+                            {/*<Route path={'/login'} render={() => <LoginPage/>}/>*/}
                             {/*<Route path={'/register'} render={() => <RegisterPage/>}/>*/}
                             <Route path={'/important'} render={() => <TodoListPage lists={lists}/>}/>
                             <Route path={'/planned'} render={() => <TodoListPage lists={lists}/>}/>

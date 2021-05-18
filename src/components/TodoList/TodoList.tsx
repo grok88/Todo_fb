@@ -4,7 +4,16 @@ import {List, Typography} from '@material-ui/core';
 import {ListsType} from '../AppDrawer/AppDrawer';
 import {TodoListItem} from './TodoListItem/TodoListItem';
 
-export type TodoType = { title: string, id: string, listId: string, completed: boolean };
+export type TodoType = {
+    title: string, id: string,
+    listId: string,
+    completed: boolean ,
+    dueDate: null | string
+    important:boolean
+    notes:string
+    userId:string
+    steps:Array<any>
+};
 
 type TodoListPropsType = {
     list?: ListsType
@@ -12,10 +21,11 @@ type TodoListPropsType = {
     onDeleteTodo: (todoId: string,) => void
     onStatusChange: (value: boolean, todoId: string) => void
     onSelectedTodo: (todo: TodoType | null) => void
+    onUpdateImportant: (value: boolean, todoId: string) => void
 }
 export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
     console.log('TodoList');
-    const {todos, list, onDeleteTodo, onStatusChange, onSelectedTodo} = props;
+    const {todos, list, onDeleteTodo, onStatusChange, onSelectedTodo,onUpdateImportant} = props;
     return (
         <AppContent>
             <div className={'todo-list'}>
@@ -28,7 +38,9 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
                             return <TodoListItem key={todo.id} todo={todo}
                                                  onDeleteTodo={onDeleteTodo}
                                                  onSelectedTodo={onSelectedTodo}
-                                                 onStatusChange={onStatusChange}/>
+                                                 onStatusChange={onStatusChange}
+                                                 onUpdateImportant={  onUpdateImportant}
+                            />
                         })
                     }
                 </List>

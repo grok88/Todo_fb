@@ -66,6 +66,17 @@ export const checkUserIsAuth = () => async (dispatch: ThunkDispatch<AppRootState
     dispatch(changeStatus('loading'));
     const isRegister = getState().auth.isRegister;
     try {
+        //
+        // const email = localStorage.getItem('email')
+        // debugger
+        // if(email) {
+        //     firebase.auth().sendSignInLinkToEmail(JSON.parse(email), {url: ''})
+        //         .then(() => {
+        //            debugger
+        //             // ...
+        //         })
+        // }
+
         firebase.auth().onAuthStateChanged((user) => {
             if (user ) {
                 // User is signed in, see docs for a list of available properties
@@ -97,10 +108,19 @@ export const logIn = (email: string, password: string) => async (dispatch: Thunk
 
     dispatch(changeStatus('loading'));
     try {
-        await authAPI.loginByPassword(email, password);
-        // firebase.auth().signInWithEmailAndPassword(email, password)
-        dispatch(changeStatus('succeeded'));
-        dispatch(changeIsAuth(true));
+        const userCredential = await authAPI.loginByPassword(email, password);
+        // if(userCredential.user){
+        //     dispatch(setUser({
+        //         uid: userCredential.user.uid,
+        //         email: userCredential.user.email,
+        //         name: userCredential.user.displayName,
+        //     }));
+        //     localStorage.setItem('email', JSON.stringify( userCredential.user.email))
+        //     // firebase.auth().signInWithEmailAndPassword(email, password)
+            dispatch(changeStatus('succeeded'));
+            dispatch(changeIsAuth(true));
+        // }
+
     } catch (error) {
         dispatch(changeStatus('failed'));
         //ser LoginForm serverError

@@ -1,8 +1,8 @@
 import React from 'react';
-import {TodoType} from '../../pages/TodoListPage/TodoListPage';
 import CloseIcon from '@material-ui/icons/Close';
 import {makeStyles} from '@material-ui/core/styles';
 import {IconButton, Paper, Typography} from '@material-ui/core';
+import {TodoType} from '../TodoList/TodoList';
 
 type TodoDetailsPropsType = {
     todo: TodoType
