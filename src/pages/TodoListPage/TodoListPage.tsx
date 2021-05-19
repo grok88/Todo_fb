@@ -80,8 +80,8 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
             })
     }
     // change todo task status
-    const onUpdate = (value: boolean, todoId: string) => {
-        updateTodo({completed: value}, todoId)
+    const onUpdate = (field:any, todoId: string) => {
+        updateTodo(field, todoId)
             .then(() => {
                 // @ts-ignore
                 getSortedCollection('todos', 'listId', listId).then(setTodos);
@@ -102,7 +102,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                     <TodoList list={list} todos={todos}
                               onSelectedTodo={onSelectedTodo}
                               onDeleteTodo={onDeleteTodo}
-                              onStatusChange={onUpdate}
+                              onUpdate={onUpdate}
                               onUpdateImportant={() => {}}
 
                     />

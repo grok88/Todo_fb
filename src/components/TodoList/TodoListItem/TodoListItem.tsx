@@ -8,7 +8,7 @@ import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 type TodoListItemPropsType = {
     todo: TodoType
-    onStatusChange: (value: boolean, todoId: string) => void
+    onUpdate: (field: any, todoId: string) => void
     onUpdateImportant: (value: boolean, todoId: string) => void
     onDeleteTodo: (todoId: string) => void
     onSelectedTodo: (todo: TodoType | null) => void
@@ -16,26 +16,27 @@ type TodoListItemPropsType = {
 
 export const TodoListItem: React.FC<TodoListItemPropsType> = React.memo((props) => {
     console.log('TodoListItem')
-    const {todo, onStatusChange, onDeleteTodo, onSelectedTodo, onUpdateImportant} = props;
+    const {todo, onUpdate, onDeleteTodo, onSelectedTodo, onUpdateImportant} = props;
     return (
-        <ListItem key={todo.id} dense button >
+        <ListItem key={todo.id} dense button>
             <ListItemIcon>
                 <Checkbox
                     edge="start"
                     checked={todo.completed}
                     disableRipple
-                    onChange={(e) => onStatusChange(e.currentTarget.checked, todo.id)}
+                    onChange={(e) => onUpdate({completed: e.currentTarget.checked}, todo.id)}
                 />
             </ListItemIcon>
             <ListItemText onClick={() => onSelectedTodo(todo)}>
                 {todo.title}
             </ListItemText>
+            <ListItemIcon onClick={() => onUpdate({important:!todo.important},  todo.id)} style={{cursor: 'pointer'}}>
+                {todo.important ? <StarIcon/> : <StarBorderIcon/>}
+            </ListItemIcon>
             <ListItemIcon onClick={() => onDeleteTodo(todo.id)} style={{cursor: 'pointer'}}>
                 <DeleteIcon/>
             </ListItemIcon>
-            <ListItemIcon onClick={() => onUpdateImportant} style={{cursor: 'pointer'}}>
-                {todo.important ?   <StarIcon/> : <StarBorderIcon/>}
-            </ListItemIcon>
+
         </ListItem>
     );
 });
