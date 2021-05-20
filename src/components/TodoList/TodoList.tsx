@@ -7,12 +7,12 @@ import {TodoListItem} from './TodoListItem/TodoListItem';
 export type TodoType = {
     title: string, id: string,
     listId: string,
-    completed: boolean ,
+    completed: boolean,
     dueDate: null | string
-    important:boolean
-    notes:string
-    userId:string
-    steps:Array<any>
+    important: boolean
+    notes: string
+    userId: string
+    steps: Array<any>
 };
 
 type TodoListPropsType = {
@@ -21,11 +21,9 @@ type TodoListPropsType = {
     onDeleteTodo: (todoId: string,) => void
     onUpdate: (field: any, todoId: string) => void
     onSelectedTodo: (todo: TodoType | null) => void
-    onUpdateImportant: (value: boolean, todoId: string) => void
 }
 export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
-    console.log('TodoList');
-    const {todos, list, onDeleteTodo, onUpdate, onSelectedTodo,onUpdateImportant} = props;
+    const {todos, list, onDeleteTodo, onUpdate, onSelectedTodo} = props;
     return (
         <AppContent>
             <div className={'todo-list'}>
@@ -39,7 +37,6 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
                                                  onDeleteTodo={onDeleteTodo}
                                                  onSelectedTodo={onSelectedTodo}
                                                  onUpdate={onUpdate}
-                                                 onUpdateImportant={  onUpdateImportant}
                             />
                         })
                     }

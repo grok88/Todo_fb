@@ -18,7 +18,7 @@ export function getLists(userId) {
 }
 export function getTodos(userId='') {
     return db.collection('todos')
-        .where('listId', '==', '')
+        // .where('listId', '==', '')
         .where('userId', '==', userId)
         .get()
         .then((snapshot) => {

@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 
 import {createTodo, deleteTodoTask, getSortedCollection, getTodos, updateTodo} from '../../api/api';
 import {TodoList, TodoType} from '../../components/TodoList/TodoList';
@@ -21,8 +21,6 @@ const useStyles = makeStyles({
     }
 });
 
-// export type TodoType = { title: string, id: string, listId: string, completed: boolean };
-
 type  ParamsType = {
     listId: string
     todoId: string
@@ -32,29 +30,48 @@ type TodoListPagePropsType = {
     lists: Array<ListsType>
 }
 export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) => {
-    console.log('TodoListPage');
     const classes = useStyles();
 
-    const [todos, setTodos] = useState<Array<TodoType>>([]);
+    let [todos, setTodos] = useState<Array<TodoType>>([]);
     const user = useSelector<AppRootStateType, UserType | null>(state => state.auth.user);
-
-    console.log(todos)
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
     //Use params
-    const {listId, todoId} = useParams<ParamsType>();
-    console.log(listId)
+    const {listId,
+        // todoId
+    } = useParams<ParamsType>();
+
+    // console.log(useLocation().pathname)
 
     useEffect(() => {
-        if (listId) {
-            // @ts-ignore
-            getSortedCollection('todos', 'listId', listId).then(setTodos);
-        } else {
+            // if (listId) {
+            //     // @ts-ignore
+            //     getSortedCollection('todos', 'listId', listId).then(setTodos);
+            // } else {
             // @ts-ignore
             getTodos(user?.uid).then(setTodos);
-        }
-    }, [listId]);
+            // }
+        },
+        [user?.uid]
+    );
 
-    const list = useMemo(() => props.lists.find(list => list.id === listId), [props.lists, listId]);
+
+    const list = useMemo(() => props.lists.find(list => list.id === listId) || {
+        title: 'задачи',
+        id: ''
+    }, [props.lists, listId]);
+    const path = useLocation().pathname;
+
+
+    const getFilteredTodos = ({
+        '/': todos => todos,
+        '/important': todos => todos.filter(todo => todo.important),
+        '/planned': todos => todos.filter(todo => todo.dueDate),
+    })
+    console.log(todos)
+    console.log(listId)
+    // console.log(getFilteredTodos[path](todos))
+    todos = listId ? todos.filter(todo => todo.listId === list.id) : getFilteredTodos[path](todos);
+    console.log(todos);
 
     //Add new todoTask
     const onSubmitHandler = (title: string) => {
@@ -67,7 +84,9 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
         console.log(data)
         createTodo(data)
             .then((todo: any) => {
-                setTodos([...todos, todo]);
+                // setTodos([...todos, todo]);
+                // @ts-ignore
+                getTodos(user?.uid).then(setTodos);
             });
     }
 
@@ -75,17 +94,20 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     const onDeleteTodo = (todoId: string) => {
         deleteTodoTask(todoId)
             .then(todoId => {
-                setTodos(todos.filter(todo => todo.id !== todoId));
+                // setTodos(todos.filter(todo => todo.id !== todoId));
+                // @ts-ignore
+                getTodos(user?.uid).then(setTodos);
                 setSelectedTodo(null);
             })
     }
     // change todo task status
-    const onUpdate = (field:any, todoId: string) => {
+    const onUpdate = (field: any, todoId: string) => {
         updateTodo(field, todoId)
             .then(() => {
                 // @ts-ignore
-                getSortedCollection('todos', 'listId', listId).then(setTodos);
+                // getSortedCollection('todos', 'listId', listId).then(setTodos);
                 // console.log('SUCCESS')
+                getTodos(user?.uid).then(setTodos);
             });
     }
     // onSelected todo for details
@@ -103,8 +125,6 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                               onSelectedTodo={onSelectedTodo}
                               onDeleteTodo={onDeleteTodo}
                               onUpdate={onUpdate}
-                              onUpdateImportant={() => {}}
-
                     />
                     <TodoForm onSubmitHandler={onSubmitHandler}/>
                 </Grid>

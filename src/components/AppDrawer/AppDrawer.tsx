@@ -49,7 +49,7 @@ const getAvatarIcon = (icon) => {
 const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     const classes = useStyles();
     const {lists} = props;
-    console.log(lists)
+    // console.log(lists)
 
 
     const email = useSelector<AppRootStateType, any>(state => state.auth.user?.email);

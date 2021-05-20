@@ -13,7 +13,6 @@ type TodoFormPropsType = {
 }
 
 export const TodoForm: React.FC<TodoFormPropsType> = React.memo(({onSubmitHandler}) => {
-    console.log('TodoForm');
     const classes = useStyles();
 
     const [title, setTitle] = useState<string>('');

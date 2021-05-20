@@ -64,7 +64,6 @@ export const changeIsRegister = (isRegister: boolean) => {
 //thunks
 export const checkUserIsAuth = () => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
     dispatch(changeStatus('loading'));
-    const isRegister = getState().auth.isRegister;
     try {
         //
         // const email = localStorage.getItem('email')
@@ -78,7 +77,7 @@ export const checkUserIsAuth = () => async (dispatch: ThunkDispatch<AppRootState
         // }
 
         firebase.auth().onAuthStateChanged((user) => {
-            if (user ) {
+            if (user) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 const uid = user.uid;
@@ -117,8 +116,8 @@ export const logIn = (email: string, password: string) => async (dispatch: Thunk
         //     }));
         //     localStorage.setItem('email', JSON.stringify( userCredential.user.email))
         //     // firebase.auth().signInWithEmailAndPassword(email, password)
-            dispatch(changeStatus('succeeded'));
-            dispatch(changeIsAuth(true));
+        dispatch(changeStatus('succeeded'));
+        dispatch(changeIsAuth(true));
         // }
 
     } catch (error) {
@@ -152,8 +151,9 @@ export const logOut = () => async (dispatch: ThunkDispatch<AppRootStateType, unk
 export const registerUser = (email: string, password: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
     dispatch(changeStatus('loading'));
     try {
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
+        // const userCredential =
+            await firebase.auth().createUserWithEmailAndPassword(email, password);
+        // const user = userCredential.user;
         dispatch(changeIsRegister(true));
         dispatch(changeStatus('succeeded'));
     } catch (error) {

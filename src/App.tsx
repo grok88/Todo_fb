@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './app.scss';
 import AppDrawer, {ListsType} from './components/AppDrawer/AppDrawer';
-import { getLists} from './api/api';
+import {getLists} from './api/api';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import {Container, Grid, LinearProgress} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
@@ -24,21 +24,22 @@ const useStyles = makeStyles({
 });
 
 const App = () => {
-    console.log('App');
     const classes = useStyles();
 
     const [lists, setLists] = useState<Array<ListsType>>([]);
 
     const dispatch = useDispatch();
     const user = useSelector<AppRootStateType, any>(state => state.auth.user);
-    const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isAuth);
-    const isRegister = useSelector<AppRootStateType, boolean>(state => state.auth.isRegister);
+    // const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isAuth);
+    // const isRegister = useSelector<AppRootStateType, boolean>(state => state.auth.isRegister);
     const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
     // console.log(user, isAuth);
 
     useEffect(() => {
+        if (!user) {
             dispatch(checkUserIsAuth());
-    }, []);
+        }
+    }, [dispatch]);
 
     useEffect(() => {
         if (user) {
@@ -48,8 +49,6 @@ const App = () => {
     }, [user])
 
     if (!user) {
-        console.log(!isAuth)
-        console.log(user)
         return <Switch>
             <Route exact path={'/'} render={() => <Redirect to={'/login'}/>}/>
             <Route path={'/login'} render={() => <LoginPage/>}/>
