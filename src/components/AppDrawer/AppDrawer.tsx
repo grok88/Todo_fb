@@ -29,7 +29,7 @@ const useStyles = makeStyles({
     }
 });
 
-export type ListsType = { title: string, id: string };
+export type ListsType = { title: string, id: string , sort:string};
 
 type AppDrawerPropsType = {
     lists: Array<ListsType>

@@ -1,8 +1,9 @@
 import React from 'react';
 import AppContent from '../AppContent/AppContent';
-import {List, Typography} from '@material-ui/core';
+import {List} from '@material-ui/core';
 import {ListsType} from '../AppDrawer/AppDrawer';
 import {TodoListItem} from './TodoListItem/TodoListItem';
+import {TodoHeader} from './TodoHeader/TodoHeader';
 
 export type TodoType = {
     title: string, id: string,
@@ -27,9 +28,7 @@ export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
     return (
         <AppContent>
             <div className={'todo-list'}>
-                <Typography variant="h3" component="h2" style={{margin: '16px'}} align={'center'}>
-                    {list && list.title}
-                </Typography>
+                <TodoHeader list={list}/>
                 <List>
                     {
                         todos.map(todo => {

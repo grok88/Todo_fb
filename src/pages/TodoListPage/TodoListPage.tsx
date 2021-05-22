@@ -1,9 +1,8 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useLocation, useParams} from 'react-router-dom';
 
-import {createTodo, deleteTodoTask, getSortedCollection, getTodos, updateTodo} from '../../api/api';
+import {createTodo, deleteTodoTask, getTodos, updateTodo} from '../../api/api';
 import {TodoList, TodoType} from '../../components/TodoList/TodoList';
-import {ListsType} from '../../components/AppDrawer/AppDrawer';
 import {TodoForm} from './TodoForm/TodoForm';
 import {makeStyles} from '@material-ui/core/styles';
 import {TodoDetails} from '../../components/TodoDetails/TodoDetails';
@@ -11,6 +10,7 @@ import {Grid} from '@material-ui/core';
 import {useSelector} from 'react-redux';
 import {AppRootStateType} from '../../store/store';
 import {UserType} from '../../store/authReducer';
+import {ListsType} from '../../components/AppDrawer/AppDrawer';
 
 const useStyles = makeStyles({
     todoListPage: {
@@ -36,43 +36,44 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     const user = useSelector<AppRootStateType, UserType | null>(state => state.auth.user);
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
     //Use params
-    const {listId,
+    const {
+        listId,
         // todoId
     } = useParams<ParamsType>();
 
-    // console.log(useLocation().pathname)
 
     useEffect(() => {
-            // if (listId) {
-            //     // @ts-ignore
-            //     getSortedCollection('todos', 'listId', listId).then(setTodos);
-            // } else {
-            // @ts-ignore
-            getTodos(user?.uid).then(setTodos);
-            // }
-        },
-        [user?.uid]
-    );
-
+        // @ts-ignore
+        getTodos(user?.uid).then(setTodos);
+    }, [user?.uid]);
 
     const list = useMemo(() => props.lists.find(list => list.id === listId) || {
         title: 'задачи',
-        id: ''
+        id: '',
+        sort: ''
     }, [props.lists, listId]);
+
     const path = useLocation().pathname;
 
-
+    //filter todos by url
     const getFilteredTodos = ({
         '/': todos => todos,
         '/important': todos => todos.filter(todo => todo.important),
         '/planned': todos => todos.filter(todo => todo.dueDate),
     })
+    // filter todos by values
+    const getSortedTodos = ({
+        title: (a, b) => a.title.localeCompare(b.title),
+        // date: (a, b) => new Date(a.seconds * 1000) - new Date(b.seconds * 1000),
+        important: (a, b) => b.important - a.important,
+        completed: (a, b) => b.completed - a.completed,
+    })
     console.log(todos)
-    console.log(listId)
     // console.log(getFilteredTodos[path](todos))
     todos = listId ? todos.filter(todo => todo.listId === list.id) : getFilteredTodos[path](todos);
     console.log(todos);
-
+    const sortedTodos = list.sort ? todos.slice().sort(getSortedTodos[list.sort]) : todos;
+    console.log(sortedTodos)
     //Add new todoTask
     const onSubmitHandler = (title: string) => {
         const data = {
@@ -81,7 +82,6 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
             userId: user?.uid,
             dueDate: null
         }
-        console.log(data)
         createTodo(data)
             .then((todo: any) => {
                 // setTodos([...todos, todo]);
@@ -121,7 +121,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
         <div className={classes.todoListPage}>
             <Grid container>
                 <Grid item className={classes.todoContent}>
-                    <TodoList list={list} todos={todos}
+                    <TodoList list={list} todos={sortedTodos}
                               onSelectedTodo={onSelectedTodo}
                               onDeleteTodo={onDeleteTodo}
                               onUpdate={onUpdate}

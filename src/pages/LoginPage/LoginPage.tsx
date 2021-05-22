@@ -127,9 +127,10 @@ export const LoginPage: React.FC = React.memo(() => {
 
         dispatch(setError(null));
     };
-    if (isAuth ) {
-        return <Redirect to={'/'}/>
-    }
+    console.log(isAuth)
+    // if (isAuth ) {
+    //     return <Redirect to={'/'}/>
+    // }
 
     return <Container component="main" className={classes.loginBlock}>
         <div className={classes.paper}>
