@@ -35,6 +35,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     let [todos, setTodos] = useState<Array<TodoType>>([]);
     const user = useSelector<AppRootStateType, UserType | null>(state => state.auth.user);
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
+    const [sortBy, setSortBy] = useState<string>('');
     //Use params
     const {
         listId,
@@ -72,8 +73,13 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     // console.log(getFilteredTodos[path](todos))
     todos = listId ? todos.filter(todo => todo.listId === list.id) : getFilteredTodos[path](todos);
     console.log(todos);
-    const sortedTodos = list.sort ? todos.slice().sort(getSortedTodos[list.sort]) : todos;
+    const sortedTodos = sortBy ? todos.slice().sort(getSortedTodos[sortBy]) : todos;
     console.log(sortedTodos)
+
+    //sort todos
+    const onSortTodos = (sort: string) => {
+        setSortBy(sort);
+    }
     //Add new todoTask
     const onSubmitHandler = (title: string) => {
         const data = {
@@ -125,6 +131,8 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                               onSelectedTodo={onSelectedTodo}
                               onDeleteTodo={onDeleteTodo}
                               onUpdate={onUpdate}
+                              sortBy={sortBy}
+                              onSort={onSortTodos}
                     />
                     <TodoForm onSubmitHandler={onSubmitHandler}/>
                 </Grid>

@@ -1,22 +1,22 @@
 import React from 'react';
-import {ListItem, Typography, List,} from '@material-ui/core';
+import {List, ListItem, Typography,} from '@material-ui/core';
 import {ListsType} from '../../AppDrawer/AppDrawer';
 import {makeStyles} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const options = [
-    'По названию',
-    'По важности',
-    'По готовности',
-
+    {title: 'По названию', sort: 'title'},
+    {title: 'По важности', sort: 'important'},
+    {title: 'По готовности', sort: 'completed'},
 ];
 
 type TodoHeaderPropsType = {
     list?: ListsType
+    sortBy: string
+    onSort: (sort: string) => void
 }
 //styles
 const useStyles = makeStyles({
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 });
 
 export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
-    const {list} = props;
+    const {list, sortBy, onSort} = props;
     const classes = useStyles();
 
     //menu
@@ -37,17 +37,17 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
+    const handleClose = (sort: string) => {
         setAnchorEl(null);
-        console.log(anchorEl);
+        onSort(sort);
     };
 
-    return <div className={classes.todoHeader} >
+    return <div className={classes.todoHeader}>
         <Typography variant="h3" component="h2" style={{margin: '16px'}} align={'center'}>
-            <List >
-                <ListItem alignItems={'flex-start'} >
+            <List>
+                <ListItem alignItems={'flex-start'}>
                     {list && list.title}
-                    <div >
+                    <div>
                         <IconButton
                             edge={'end'}
                             aria-controls="long-menu"
@@ -69,11 +69,12 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
                                 },
                             }}
                         >
-                            {options.map((option) => (
-                                <MenuItem key={option} selected={option === 'По названию'} onClick={handleClose}>
-                                    {option}
+                            {options.map((option) => {
+                                return <MenuItem key={option.title} selected={option.title === sortBy}
+                                                 onClick={() => handleClose(option.sort)}>
+                                    {option.title}
                                 </MenuItem>
-                            ))}
+                            })}
                         </Menu>
                     </div>
                 </ListItem>
