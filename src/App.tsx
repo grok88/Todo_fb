@@ -19,7 +19,7 @@ const useStyles = makeStyles({
         width: '100%'
     },
     appContainer: {
-        outline: '1px solid red'
+        // outline: '1px solid red'
     }
 });
 

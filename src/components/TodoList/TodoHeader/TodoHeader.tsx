@@ -43,7 +43,7 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
     };
 
     return <div className={classes.todoHeader}>
-        <Typography variant="h3" component="h2" style={{margin: '16px'}} align={'center'}>
+        <Typography variant="h3" component="h2" style={{}} align={'center'}>
             <List>
                 <ListItem alignItems={'flex-start'}>
                     {list && list.title}

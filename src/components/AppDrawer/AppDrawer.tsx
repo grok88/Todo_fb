@@ -15,12 +15,13 @@ import {AppRootStateType} from '../../store/store';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
 import {logOut} from '../../store/authReducer';
+import {AddList} from './AddList/AddList';
 
 const useStyles = makeStyles({
     appDrawer: {
         borderRight: '1px solid #E0E0E0',
         minHeight: '100vh',
-        padding: '5px 0',
+        padding: '5px',
         ['@media (max-width:600px)']: { // eslint-disable-line no-useless-computed-key
             borderRight: 'none',
             borderBottom: '1px solid #E0E0E0',
@@ -131,6 +132,7 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
                     })
                 }
             </List>
+            <AddList/>
         </div>
     )
 })

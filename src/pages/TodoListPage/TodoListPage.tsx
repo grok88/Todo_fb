@@ -14,7 +14,8 @@ import {ListsType} from '../../components/AppDrawer/AppDrawer';
 
 const useStyles = makeStyles({
     todoListPage: {
-        padding: '10px',
+        // padding: '0 10px',
+
     },
     todoContent: {
         flexGrow: 1,
@@ -63,14 +64,15 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
         '/planned': todos => todos.filter(todo => todo.dueDate),
     })
     // filter todos by values
+
     const getSortedTodos = ({
         title: (a, b) => a.title.localeCompare(b.title),
+        // @ts-ignore
         // date: (a, b) => new Date(a.seconds * 1000) - new Date(b.seconds * 1000),
         important: (a, b) => b.important - a.important,
         completed: (a, b) => b.completed - a.completed,
     })
     console.log(todos)
-    // console.log(getFilteredTodos[path](todos))
     todos = listId ? todos.filter(todo => todo.listId === list.id) : getFilteredTodos[path](todos);
     console.log(todos);
     const sortedTodos = sortBy ? todos.slice().sort(getSortedTodos[sortBy]) : todos;

@@ -4,7 +4,8 @@ import {TextField} from '@material-ui/core';
 
 const useStyles = makeStyles({
     todoForm: {
-        marginBottom:'8px'
+        marginBottom:'8px',
+        padding:'0 10px'
     }
 });
 
