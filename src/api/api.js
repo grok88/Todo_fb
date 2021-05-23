@@ -16,7 +16,8 @@ export function getLists(userId) {
             console.log('Error getting documents: ', error);
         });
 }
-export function getTodos(userId='') {
+
+export function getTodos(userId = '') {
     return db.collection('todos')
         // .where('listId', '==', '')
         .where('userId', '==', userId)
@@ -49,12 +50,13 @@ export function getSortedCollection(collection, sortBy, value) {
         });
 }
 
-export function  createTodo(data) {
+// TODO
+export function createTodo(data) {
     return db.collection("todos").add({
-        ...data,
         completed: false,
-        notes:'',
-        steps:[]
+        notes: '',
+        steps: [],
+        ...data,
     })
         .then(docRef => docRef.get())
         .then(doc => ({
@@ -82,6 +84,23 @@ export function updateTodo(data, todoId) {
             console.error("Error updating document: ", error);
         });
 }
+
+//LIST
+export function createList(data) {
+    return db.collection("lists").add({
+        sort: '',
+        ...data,
+    })
+        .then(docRef => docRef.get())
+        .then(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }))
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+        });
+}
+
 
 //AUTH
 export const authAPI = {

@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import './app.scss';
 import AppDrawer, {ListsType} from './components/AppDrawer/AppDrawer';
-import {getLists} from './api/api';
+import {createList, getLists} from './api/api';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import {Container, Grid, LinearProgress} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
@@ -33,7 +33,6 @@ const App = () => {
     // const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isAuth);
     // const isRegister = useSelector<AppRootStateType, boolean>(state => state.auth.isRegister);
     const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
-    // console.log(user, isAuth);
 
     useEffect(() => {
         if (!user) {
@@ -47,6 +46,19 @@ const App = () => {
             getLists(user.uid).then(setLists);
         }
     }, [user])
+
+    //Create new list
+    const onCreateList = useCallback((title: string) => {
+        const data = {
+            title,
+            userId: user.uid
+        }
+        createList(data)
+            .then(() => {
+                // @ts-ignore
+                return getLists(user.uid).then(setLists)
+            });
+    }, [user]);
 
     if (!user) {
         return <Switch>
@@ -64,7 +76,7 @@ const App = () => {
                 }
                 <Grid container className={classes.appContainer}>
                     <Grid item xs={12} sm={5} md={3} xl={3}>
-                        <AppDrawer lists={lists}/>
+                        <AppDrawer lists={lists} onCreateList={onCreateList}/>
                     </Grid>
                     <Grid item xs={12} sm={7} md={9} xl={9}>
                         <Switch>

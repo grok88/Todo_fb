@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {NavLink, useHistory} from 'react-router-dom';
 
 import {List, ListItem, Typography} from '@material-ui/core';
@@ -30,10 +30,11 @@ const useStyles = makeStyles({
     }
 });
 
-export type ListsType = { title: string, id: string , sort:string};
+export type ListsType = { title: string, id: string, sort: string };
 
 type AppDrawerPropsType = {
     lists: Array<ListsType>
+    onCreateList: (title: string) => void
 }
 
 const getAvatarIcon = (icon) => {
@@ -49,7 +50,7 @@ const getAvatarIcon = (icon) => {
 
 const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     const classes = useStyles();
-    const {lists} = props;
+    const {lists,onCreateList} = props;
     // console.log(lists)
 
 
@@ -132,7 +133,7 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
                     })
                 }
             </List>
-            <AddList/>
+            <AddList onCreateList={onCreateList}/>
         </div>
     )
 })

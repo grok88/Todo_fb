@@ -88,7 +88,8 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
             title,
             listId: list?.id ? list?.id : '',
             userId: user?.uid,
-            dueDate: null
+            dueDate: null,
+            important:false
         }
         createTodo(data)
             .then((todo: any) => {
