@@ -27,6 +27,9 @@ const useStyles = makeStyles({
             borderBottom: '1px solid #E0E0E0',
             minHeight: 'auto',
         }
+    },
+    logout:{
+        padding:0
     }
 });
 
@@ -84,12 +87,14 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
                 React Todo
             </Typography>
             {
-                isAuth && <List>
-                    <ListItem>
-                        {email}
-                        <IconButton aria-label="logout" onClick={onLogOut}>
-                            <ExitToAppIcon/>
-                        </IconButton>
+                isAuth && <List className={classes.logout}>
+                    <ListItem style={{padding:0, color:'blue'}} divider>
+                       <div style={{margin:'0 auto'}}>
+                           {email}
+                           <IconButton aria-label="logout" onClick={onLogOut}>
+                               <ExitToAppIcon color={'primary'}/>
+                           </IconButton>
+                       </div>
                     </ListItem>
                 </List>
             }
