@@ -101,6 +101,17 @@ export function createList(data) {
         });
 }
 
+export function updateList(data, listId) {
+    return db.collection("lists").doc(listId)
+        .update(data)
+        .then(() => {
+            // console.log("Document successfully updated!");
+        })
+        .catch((error) => {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+        });
+}
 
 //AUTH
 export const authAPI = {

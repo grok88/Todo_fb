@@ -35,6 +35,7 @@ export type ListsType = { title: string, id: string, sort: string };
 type AppDrawerPropsType = {
     lists: Array<ListsType>
     onCreateList: (title: string) => void
+
 }
 
 const getAvatarIcon = (icon) => {

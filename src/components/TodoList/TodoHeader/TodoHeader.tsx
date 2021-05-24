@@ -14,9 +14,10 @@ const options = [
 ];
 
 type TodoHeaderPropsType = {
-    list?: ListsType
-    sortBy: string
-    onSort: (sort: string) => void
+    list: ListsType
+    // sortBy: string
+    // onSort: (sort: string) => void
+    onUpdateList: (field: any, listId: string) => void
 }
 //styles
 const useStyles = makeStyles({
@@ -26,9 +27,9 @@ const useStyles = makeStyles({
 });
 
 export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
-    const {list, sortBy, onSort} = props;
+    const {list, onUpdateList} = props;
     const classes = useStyles();
-
+    console.log(list)
     //menu
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -38,8 +39,14 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
     };
 
     const handleClose = (sort: string) => {
+        if (typeof sort !== 'string') {
+            setAnchorEl(null);
+            return
+        }
+        console.log(sort)
         setAnchorEl(null);
-        onSort(sort);
+        onUpdateList({sort}, list.id);
+        // onSort(sort);
     };
 
     return <div className={classes.todoHeader}>
@@ -70,8 +77,12 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
                             }}
                         >
                             {options.map((option) => {
-                                return <MenuItem key={option.title} selected={option.title === sortBy}
+                                console.log(list.sort)
+                                console.log(option.sort)
+
+                                return <MenuItem key={option.title} selected={option.sort === list.sort}
                                                  onClick={() => handleClose(option.sort)}>
+
                                     {option.title}
                                 </MenuItem>
                             })}

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import './app.scss';
 import AppDrawer, {ListsType} from './components/AppDrawer/AppDrawer';
-import {createList, getLists} from './api/api';
+import {createList, getLists, updateList} from './api/api';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import {Container, Grid, LinearProgress} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
@@ -56,7 +56,16 @@ const App = () => {
         createList(data)
             .then(() => {
                 // @ts-ignore
-                return getLists(user.uid).then(setLists)
+                getLists(user.uid).then(setLists)
+            });
+    }, [user]);
+
+    //update List
+    const onUpdateList = useCallback((field: any, listId: string) => {
+        updateList(field, listId)
+            .then(() => {
+                // @ts-ignore
+                getLists(user.uid).then(setLists)
             });
     }, [user]);
 
@@ -80,10 +89,14 @@ const App = () => {
                     </Grid>
                     <Grid item xs={12} sm={7} md={9} xl={9}>
                         <Switch>
-                            <Route exact path={'/'} render={() => <TodoListPage lists={lists}/>}/>
-                            <Route path={'/important'} render={() => <TodoListPage lists={lists}/>}/>
-                            <Route path={'/planned'} render={() => <TodoListPage lists={lists}/>}/>
-                            <Route path={'/:listId/:todoId?'} render={() => <TodoListPage lists={lists}/>}/>
+                            <Route exact path={'/'}
+                                   render={() => <TodoListPage lists={lists} onUpdateList={onUpdateList}/>}/>
+                            <Route path={'/important'}
+                                   render={() => <TodoListPage lists={lists} onUpdateList={onUpdateList}/>}/>
+                            <Route path={'/planned'}
+                                   render={() => <TodoListPage lists={lists} onUpdateList={onUpdateList}/>}/>
+                            <Route path={'/:listId/:todoId?'}
+                                   render={() => <TodoListPage lists={lists} onUpdateList={onUpdateList}/>}/>
                         </Switch>
                     </Grid>
                 </Grid>

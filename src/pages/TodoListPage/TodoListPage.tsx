@@ -29,6 +29,7 @@ type  ParamsType = {
 type TodoListPagePropsType = {
     // todos:TodoType[]
     lists: Array<ListsType>
+    onUpdateList:(field: any, listId: string) => void
 }
 export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) => {
     const classes = useStyles();
@@ -36,7 +37,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     let [todos, setTodos] = useState<Array<TodoType>>([]);
     const user = useSelector<AppRootStateType, UserType | null>(state => state.auth.user);
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
-    const [sortBy, setSortBy] = useState<string>('');
+    // const [sortBy, setSortBy] = useState<string>('');
     //Use params
     const {
         listId,
@@ -75,13 +76,13 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     console.log(todos)
     todos = listId ? todos.filter(todo => todo.listId === list.id) : getFilteredTodos[path](todos);
     console.log(todos);
-    const sortedTodos = sortBy ? todos.slice().sort(getSortedTodos[sortBy]) : todos;
+    const sortedTodos = list.sort ? todos.slice().sort(getSortedTodos[list.sort]) : todos;
     console.log(sortedTodos)
 
     //sort todos
-    const onSortTodos = (sort: string) => {
-        setSortBy(sort);
-    }
+    // const onSortTodos = (sort: string) => {
+    //     setSortBy(sort);
+    // }
     //Add new todoTask
     const onSubmitHandler = (title: string) => {
         const data = {
@@ -134,8 +135,9 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                               onSelectedTodo={onSelectedTodo}
                               onDeleteTodo={onDeleteTodo}
                               onUpdate={onUpdate}
-                              sortBy={sortBy}
-                              onSort={onSortTodos}
+                              // sortBy={sortBy}
+                              // onSort={onSortTodos}
+                              onUpdateList={props.onUpdateList}
                     />
                     <TodoForm onSubmitHandler={onSubmitHandler}/>
                 </Grid>
