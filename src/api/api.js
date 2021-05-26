@@ -1,42 +1,10 @@
 import {db} from "../firebase";
 import firebase from "firebase";
 
-export function getLists(userId) {
-    return db.collection('lists')
-        .where('userId', '==', userId)
-        .get()
-        .then((snapshot) => {
-            const items = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }))
-            return items;
-        })
-        .catch((error) => {
-            console.log('Error getting documents: ', error);
-        });
-}
-
 export function getTodos(userId = '') {
     return db.collection('todos')
         // .where('listId', '==', '')
         .where('userId', '==', userId)
-        .get()
-        .then((snapshot) => {
-            const items = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }))
-            return items;
-        })
-        .catch((error) => {
-            console.log('Error getting documents: ', error);
-        });
-}
-
-export function getSortedCollection(collection, sortBy, value) {
-    return db.collection(collection)
-        .where(sortBy, '==', value)
         .get()
         .then((snapshot) => {
             const items = snapshot.docs.map(doc => ({
@@ -85,34 +53,6 @@ export function updateTodo(data, todoId) {
         });
 }
 
-//LIST
-export function createList(data) {
-    return db.collection("lists").add({
-        sort: '',
-        ...data,
-    })
-        .then(docRef => docRef.get())
-        .then(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }))
-        .catch((error) => {
-            console.error("Error adding document: ", error);
-        });
-}
-
-export function updateList(data, listId) {
-    return db.collection("lists").doc(listId)
-        .update(data)
-        .then(() => {
-            // console.log("Document successfully updated!");
-        })
-        .catch((error) => {
-            // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
-        });
-}
-
 //AUTH
 export const authAPI = {
     loginByPassword(email, password) {
@@ -120,6 +60,35 @@ export const authAPI = {
     },
     logOut() {
         return firebase.auth().signOut();
+    }
+}
+//LISTS
+export const listsAPI = {
+    getLists(userUid) {
+        return db.collection('lists')
+            .where('userId', '==', userUid)
+            .get()
+            .then((snapshot) => {
+                const items = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+                return items;
+            })
+    },
+    updateList(data, listId) {
+        return db.collection("lists").doc(listId).update(data);
+    },
+    createList(data) {
+        return db.collection("lists").add({
+            sort: '',
+            ...data,
+        })
+            .then(docRef => docRef.get())
+            .then(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }))
     }
 }
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useLocation, useParams} from 'react-router-dom';
 
 import {createTodo, deleteTodoTask, getTodos, updateTodo} from '../../api/api';
@@ -7,10 +7,10 @@ import {TodoForm} from './TodoForm/TodoForm';
 import {makeStyles} from '@material-ui/core/styles';
 import {TodoDetails} from '../../components/TodoDetails/TodoDetails';
 import {Grid} from '@material-ui/core';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from '../../store/store';
 import {UserType} from '../../store/authReducer';
-import {ListsType} from '../../components/AppDrawer/AppDrawer';
+import {getLists, ListsType, updatelist} from '../../store/listReducer';
 
 const useStyles = makeStyles({
     todoListPage: {
@@ -27,34 +27,43 @@ type  ParamsType = {
     todoId: string
 }
 type TodoListPagePropsType = {
-    // todos:TodoType[]
-    lists: Array<ListsType>
-    onUpdateList:(field: any, listId: string) => void
+    // lists: Array<ListsType>
+    // onUpdateList: (field: any, listId: string) => void
 }
 export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) => {
     const classes = useStyles();
 
     let [todos, setTodos] = useState<Array<TodoType>>([]);
+
+    const dispatch = useDispatch();
     const user = useSelector<AppRootStateType, UserType | null>(state => state.auth.user);
+    const lists = useSelector<AppRootStateType, Array<ListsType>>(state => state.list.lists);
+
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
-    // const [sortBy, setSortBy] = useState<string>('');
+
     //Use params
-    const {
-        listId,
-        // todoId
-    } = useParams<ParamsType>();
+    const {listId} = useParams<ParamsType>();
 
-
+    //todos
     useEffect(() => {
         // @ts-ignore
         getTodos(user?.uid).then(setTodos);
     }, [user?.uid]);
 
-    const list = useMemo(() => props.lists.find(list => list.id === listId) || {
+    //lists
+    useEffect(() => {
+        if (user) {
+            // @ts-ignore
+            dispatch(getLists(user.uid));
+        }
+    }, [user])
+
+    const list = useMemo(() => lists.find(list => list.id === listId) || {
         title: 'задачи',
         id: '',
-        sort: ''
-    }, [props.lists, listId]);
+        sort: '',
+        userId: ''
+    }, [lists, listId]);
 
     const path = useLocation().pathname;
 
@@ -79,10 +88,6 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     const sortedTodos = list.sort ? todos.slice().sort(getSortedTodos[list.sort]) : todos;
     console.log(sortedTodos)
 
-    //sort todos
-    // const onSortTodos = (sort: string) => {
-    //     setSortBy(sort);
-    // }
     //Add new todoTask
     const onSubmitHandler = (title: string) => {
         const data = {
@@ -90,7 +95,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
             listId: list?.id ? list?.id : '',
             userId: user?.uid,
             dueDate: null,
-            important:false
+            important: false
         }
         createTodo(data)
             .then((todo: any) => {
@@ -124,9 +129,17 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     const onSelectedTodo = (todo: TodoType | null) => {
         setSelectedTodo(todo);
     }
+
+    //LISTS
+    //update List
+    const onUpdateList = useCallback((field: any, listId: string) => {
+        if(user) dispatch(updatelist(field, listId, user.uid));
+    }, [user]);
+
     // if(!list || !todos){
     //     return  <LinearProgress color="secondary" />
     // }
+
     return (
         <div className={classes.todoListPage}>
             <Grid container>
@@ -135,9 +148,9 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                               onSelectedTodo={onSelectedTodo}
                               onDeleteTodo={onDeleteTodo}
                               onUpdate={onUpdate}
-                              // sortBy={sortBy}
-                              // onSort={onSortTodos}
-                              onUpdateList={props.onUpdateList}
+                        // sortBy={sortBy}
+                        // onSort={onSortTodos}
+                              onUpdateList={onUpdateList}
                     />
                     <TodoForm onSubmitHandler={onSubmitHandler}/>
                 </Grid>

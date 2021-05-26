@@ -1,11 +1,11 @@
 import React from 'react';
 import {List, ListItem, Typography,} from '@material-ui/core';
-import {ListsType} from '../../AppDrawer/AppDrawer';
 import {makeStyles} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import {ListsType} from '../../../store/listReducer';
 
 const options = [
     {title: 'По названию', sort: 'title'},
@@ -15,15 +15,20 @@ const options = [
 
 type TodoHeaderPropsType = {
     list: ListsType
-    // sortBy: string
-    // onSort: (sort: string) => void
     onUpdateList: (field: any, listId: string) => void
 }
 //styles
 const useStyles = makeStyles({
     todoHeader: {
-        background: 'orange',
+        background: '#1976D2',
     },
+    Typography: {
+        fontSize: '1.25rem',
+        fontFamily: 'Roboto',
+        fontWeight: 500,
+        lineHeight: 1.6,
+        letterSpacing: '0.0075em',
+    }
 });
 
 export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
@@ -50,7 +55,7 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
     };
 
     return <div className={classes.todoHeader}>
-        <Typography variant="h3" component="h2" style={{}} align={'center'}>
+        <Typography variant="h3" component="h2" style={{color: 'white'}} align={'center'}>
             <List>
                 <ListItem alignItems={'flex-start'}>
                     {list && list.title}
@@ -61,7 +66,7 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
                             aria-haspopup="true"
                             onClick={handleClick}
                         >
-                            <MenuIcon/>
+                            <MenuIcon style={{color: 'white'}}/>
                         </IconButton>
                         <Menu
                             id="long-menu"
@@ -77,12 +82,8 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
                             }}
                         >
                             {options.map((option) => {
-                                console.log(list.sort)
-                                console.log(option.sort)
-
                                 return <MenuItem key={option.title} selected={option.sort === list.sort}
                                                  onClick={() => handleClose(option.sort)}>
-
                                     {option.title}
                                 </MenuItem>
                             })}

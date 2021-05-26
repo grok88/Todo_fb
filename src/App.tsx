@@ -1,7 +1,6 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './app.scss';
-import AppDrawer, {ListsType} from './components/AppDrawer/AppDrawer';
-import {createList, getLists, updateList} from './api/api';
+import AppDrawer from './components/AppDrawer/AppDrawer';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import {Container, Grid, LinearProgress} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
@@ -12,6 +11,7 @@ import {AppRootStateType} from './store/store';
 import {checkUserIsAuth} from './store/authReducer';
 import {RequestStatusType} from './store/appReducer';
 import {RegisterPage} from './pages/RegisterPage/RegisterPage';
+import {createList} from './store/listReducer';
 
 const useStyles = makeStyles({
     app: {
@@ -26,26 +26,13 @@ const useStyles = makeStyles({
 const App = () => {
     const classes = useStyles();
 
-    const [lists, setLists] = useState<Array<ListsType>>([]);
-
     const dispatch = useDispatch();
     const user = useSelector<AppRootStateType, any>(state => state.auth.user);
-    // const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isAuth);
-    // const isRegister = useSelector<AppRootStateType, boolean>(state => state.auth.isRegister);
     const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
 
     useEffect(() => {
-        if (!user) {
-            dispatch(checkUserIsAuth());
-        }
+        if (!user) dispatch(checkUserIsAuth());
     }, [dispatch]);
-
-    useEffect(() => {
-        if (user) {
-            // @ts-ignore
-            getLists(user.uid).then(setLists);
-        }
-    }, [user])
 
     //Create new list
     const onCreateList = useCallback((title: string) => {
@@ -53,20 +40,7 @@ const App = () => {
             title,
             userId: user.uid
         }
-        createList(data)
-            .then(() => {
-                // @ts-ignore
-                getLists(user.uid).then(setLists)
-            });
-    }, [user]);
-
-    //update List
-    const onUpdateList = useCallback((field: any, listId: string) => {
-        updateList(field, listId)
-            .then(() => {
-                // @ts-ignore
-                getLists(user.uid).then(setLists)
-            });
+        dispatch(createList(data, user.uid));
     }, [user]);
 
     if (!user) {
@@ -85,18 +59,18 @@ const App = () => {
                 }
                 <Grid container className={classes.appContainer}>
                     <Grid item xs={12} sm={5} md={3} xl={3}>
-                        <AppDrawer lists={lists} onCreateList={onCreateList}/>
+                        <AppDrawer onCreateList={onCreateList}/>
                     </Grid>
                     <Grid item xs={12} sm={7} md={9} xl={9}>
                         <Switch>
                             <Route exact path={'/'}
-                                   render={() => <TodoListPage lists={lists} onUpdateList={onUpdateList}/>}/>
+                                   render={() => <TodoListPage/>}/>
                             <Route path={'/important'}
-                                   render={() => <TodoListPage lists={lists} onUpdateList={onUpdateList}/>}/>
+                                   render={() => <TodoListPage/>}/>
                             <Route path={'/planned'}
-                                   render={() => <TodoListPage lists={lists} onUpdateList={onUpdateList}/>}/>
+                                   render={() => <TodoListPage/>}/>
                             <Route path={'/:listId/:todoId?'}
-                                   render={() => <TodoListPage lists={lists} onUpdateList={onUpdateList}/>}/>
+                                   render={() => <TodoListPage/>}/>
                         </Switch>
                     </Grid>
                 </Grid>

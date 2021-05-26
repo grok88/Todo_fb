@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React from 'react';
 import {NavLink, useHistory} from 'react-router-dom';
 
 import {List, ListItem, Typography} from '@material-ui/core';
@@ -16,6 +16,9 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import IconButton from '@material-ui/core/IconButton';
 import {logOut} from '../../store/authReducer';
 import {AddList} from './AddList/AddList';
+import DeleteIcon from '@material-ui/icons/Delete';
+import {ListsType} from '../../store/listReducer';
+
 
 const useStyles = makeStyles({
     appDrawer: {
@@ -28,17 +31,16 @@ const useStyles = makeStyles({
             minHeight: 'auto',
         }
     },
-    logout:{
-        padding:0
+    logout: {
+        padding: 0
     }
 });
 
-export type ListsType = { title: string, id: string, sort: string };
+
 
 type AppDrawerPropsType = {
-    lists: Array<ListsType>
+    // lists: Array<ListsType>
     onCreateList: (title: string) => void
-
 }
 
 const getAvatarIcon = (icon) => {
@@ -54,10 +56,9 @@ const getAvatarIcon = (icon) => {
 
 const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     const classes = useStyles();
-    const {lists,onCreateList} = props;
-    // console.log(lists)
+    const { onCreateList} = props;
 
-
+    const lists = useSelector<AppRootStateType, Array<ListsType>>(state => state.list.lists);
     const email = useSelector<AppRootStateType, any>(state => state.auth.user?.email);
     const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isAuth);
     const dispatch = useDispatch();
@@ -88,13 +89,13 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
             </Typography>
             {
                 isAuth && <List className={classes.logout}>
-                    <ListItem style={{padding:0, color:'blue'}} divider>
-                       <div style={{margin:'0 auto'}}>
-                           {email}
-                           <IconButton aria-label="logout" onClick={onLogOut}>
-                               <ExitToAppIcon color={'primary'}/>
-                           </IconButton>
-                       </div>
+                    <ListItem style={{padding: 0, color: 'blue'}} divider>
+                        <div style={{margin: '0 auto'}}>
+                            {email}
+                            <IconButton aria-label="logout" onClick={onLogOut}>
+                                <ExitToAppIcon color={'primary'}/>
+                            </IconButton>
+                        </div>
                     </ListItem>
                 </List>
             }
@@ -127,14 +128,18 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
                         return <ListItem
                             key={item.title}
                             button
+                            dense
                             selected={selectedListIndex === index}
-                            onClick={(event) => handleListItemClick(event, index)}
                             component={NavLink} to={`/${item.id}`}
+                            onClick={(event) => handleListItemClick(event, index)}
                         >
                             <ListItemIcon>
                                 <FormatListBulletedIcon/>
                             </ListItemIcon>
-                            <ListItemText primary={item.title}/>
+                            <ListItemText primary={item.title} />
+                            <ListItemIcon onClick={() => console.log(item.id)} style={{cursor: 'pointer'}}>
+                                <DeleteIcon/>
+                            </ListItemIcon>
                         </ListItem>
                     })
                 }

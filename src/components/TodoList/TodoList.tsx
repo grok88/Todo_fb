@@ -1,9 +1,9 @@
 import React from 'react';
 import AppContent from '../AppContent/AppContent';
 import {List} from '@material-ui/core';
-import {ListsType} from '../AppDrawer/AppDrawer';
 import {TodoListItem} from './TodoListItem/TodoListItem';
 import {TodoHeader} from './TodoHeader/TodoHeader';
+import {ListsType} from '../../store/listReducer';
 
 export type TodoType = {
     title: string, id: string,
