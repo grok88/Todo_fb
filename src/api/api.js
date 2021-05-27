@@ -89,6 +89,9 @@ export const listsAPI = {
                 id: doc.id,
                 ...doc.data()
             }))
+    },
+    deleteList(listId) {
+        return db.collection("lists").doc(listId).delete();
     }
 }
 //TODOS
@@ -123,7 +126,7 @@ export const todosAPI = {
     },
     deleteTodo(todoId) {
         return db.collection("todos").doc(todoId).delete()
-            // .then(() => todoId);
+        // .then(() => todoId);
     }
 }
 

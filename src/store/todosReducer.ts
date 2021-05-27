@@ -79,9 +79,7 @@ export const updateTodo = (data: any, todoId: string, userId: string) => async (
 }
 export const deleteTodo = (todoId: string ,userId: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
     dispatch(changeStatus('loading'));
-    debugger
     try {
-        debugger
         await todosAPI.deleteTodo( todoId);
         dispatch(getTodos(userId));
         dispatch(changeStatus('succeeded'));

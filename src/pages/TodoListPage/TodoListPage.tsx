@@ -13,6 +13,7 @@ import {createTodo, deleteTodo, getTodos, TodoType, updateTodo} from '../../stor
 
 const useStyles = makeStyles({
     todoListPage: {
+        padding:'0 8px'
     },
     todoContent: {
         flexGrow: 1,
@@ -37,22 +38,21 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
 
     //Use params
     const {listId} = useParams<ParamsType>();
-
     //todos
     useEffect(() => {
         // @ts-ignore
         dispatch(getTodos(user?.uid));
-    }, [user?.uid]);
+    }, [dispatch,user?.uid]);
 
     //lists
     useEffect(() => {
         if (user) {
             dispatch(getLists(user.uid));
         }
-    }, [user])
+    }, [dispatch,user])
 
     const list = useMemo(() => lists.find(list => list.id === listId) || {
-        title: 'задачи',
+        title: 'Задачи',
         id: '',
         sort: '',
         userId: ''
@@ -75,14 +75,13 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
         important: (a, b) => b.important - a.important,
         completed: (a, b) => b.completed - a.completed,
     })
-    console.log(todos)
+
     todos = listId ? todos.filter(todo => todo.listId === list.id) : getFilteredTodos[path](todos);
-    console.log(todos);
     const sortedTodos = list.sort ? todos.slice().sort(getSortedTodos[list.sort]) : todos;
     console.log(sortedTodos)
 
     //Add new todoTask
-    const onSubmitHandler = (title: string) => {
+    const onSubmitHandler =  useCallback((title: string) => {
         const data = {
             title,
             listId: list?.id ? list?.id : '',
@@ -91,29 +90,29 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
             important: false
         }
         if (user) dispatch(createTodo(data, user.uid));
-    }
+    }, [dispatch,user, list]);
 
     //delete todo task by Id
-    const onDeleteTodo = (todoId: string) => {
+    const onDeleteTodo =  useCallback((todoId: string) => {
         if (user) dispatch(deleteTodo(todoId, user.uid));
         setSelectedTodo(null);
-    }
+    }, [dispatch,user]);
 
     // change todo task status
-    const onUpdate = (field: any, todoId: string) => {
+    const onUpdate = useCallback((field: any, todoId: string) => {
         if (user) dispatch(updateTodo(field, todoId, user.uid));
-    }
+    }, [dispatch,user]);
 
     // onSelected todo for details
-    const onSelectedTodo = (todo: TodoType | null) => {
+    const onSelectedTodo = useCallback((todo: TodoType | null) => {
         setSelectedTodo(todo);
-    }
+    },[])
 
     //LISTS
     //update List
     const onUpdateList = useCallback((field: any, listId: string) => {
         if (user) dispatch(updatelist(field, listId, user.uid));
-    }, [user]);
+    }, [dispatch,user]);
 
     // if(!list || !todos){
     //     return  <LinearProgress color="secondary" />
@@ -128,6 +127,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                               onDeleteTodo={onDeleteTodo}
                               onUpdate={onUpdate}
                               onUpdateList={onUpdateList}
+                              listId={listId}
                     />
                     <TodoForm onSubmitHandler={onSubmitHandler}/>
                 </Grid>

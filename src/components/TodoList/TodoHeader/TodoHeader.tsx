@@ -1,5 +1,5 @@
 import React from 'react';
-import {List, ListItem, Typography,} from '@material-ui/core';
+import {List, ListItem, ListItemSecondaryAction, Typography,} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,6 +16,7 @@ const options = [
 type TodoHeaderPropsType = {
     list: ListsType
     onUpdateList: (field: any, listId: string) => void
+    listId:string
 }
 //styles
 const useStyles = makeStyles({
@@ -32,7 +33,7 @@ const useStyles = makeStyles({
 });
 
 export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
-    const {list, onUpdateList} = props;
+    const {list, onUpdateList,listId} = props;
     const classes = useStyles();
     console.log(list)
     //menu
@@ -48,10 +49,8 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
             setAnchorEl(null);
             return
         }
-        console.log(sort)
         setAnchorEl(null);
         onUpdateList({sort}, list.id);
-        // onSort(sort);
     };
 
     return <div className={classes.todoHeader}>
@@ -59,36 +58,38 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
             <List>
                 <ListItem alignItems={'flex-start'}>
                     {list && list.title}
-                    <div>
-                        <IconButton
-                            edge={'end'}
-                            aria-controls="long-menu"
-                            aria-haspopup="true"
-                            onClick={handleClick}
-                        >
-                            <MenuIcon style={{color: 'white'}}/>
-                        </IconButton>
-                        <Menu
-                            id="long-menu"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={open}
-                            onClose={handleClose}
-                            PaperProps={{
-                                style: {
-                                    // maxHeight: ITEM_HEIGHT * 4.5,
-                                    width: '20ch',
-                                },
-                            }}
-                        >
-                            {options.map((option) => {
-                                return <MenuItem key={option.title} selected={option.sort === list.sort}
-                                                 onClick={() => handleClose(option.sort)}>
-                                    {option.title}
-                                </MenuItem>
-                            })}
-                        </Menu>
-                    </div>
+                    {
+                        listId &&  <ListItemSecondaryAction>
+                            <IconButton
+                                edge={'end'}
+                                aria-controls="long-menu"
+                                aria-haspopup="true"
+                                onClick={handleClick}
+                            >
+                                <MenuIcon style={{color: 'white'}}/>
+                            </IconButton>
+                            <Menu
+                                id="long-menu"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={open}
+                                onClose={handleClose}
+                                PaperProps={{
+                                    style: {
+                                        // maxHeight: ITEM_HEIGHT * 4.5,
+                                        width: '20ch',
+                                    },
+                                }}
+                            >
+                                {options.map((option) => {
+                                    return <MenuItem key={option.title} selected={option.sort === list.sort}
+                                                     onClick={() => handleClose(option.sort)}>
+                                        {option.title}
+                                    </MenuItem>
+                                })}
+                            </Menu>
+                        </ListItemSecondaryAction>
+                    }
                 </ListItem>
             </List>
         </Typography>

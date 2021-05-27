@@ -1,7 +1,8 @@
 import {ThunkDispatch} from 'redux-thunk';
 import {changeStatus, setError} from './appReducer';
 import {AppRootStateType, TodoActionsType} from './store';
-import {listsAPI} from '../api/api';
+import {listsAPI, todosAPI} from '../api/api';
+import {getTodos} from './todosReducer';
 
 export type ListsType = { title: string, id: string, sort: string, userId: string };
 
@@ -69,6 +70,20 @@ export const createList = (data: any, userId: string) => async (dispatch: ThunkD
     }
 }
 
+export const deleteList = (listId: string ,userId: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
+    dispatch(changeStatus('loading'));
+    debugger
+    try {
+        debugger
+        await listsAPI.deleteList(listId);
+        dispatch(getLists(userId));
+        dispatch(changeStatus('succeeded'));
+    } catch (error) {
+        dispatch(changeStatus('failed'));
+        const errorMessage = error.message;
+        dispatch(setError(errorMessage));
+    }
+}
 //types
 type SetListAC = ReturnType<typeof setList>;
 

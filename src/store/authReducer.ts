@@ -93,16 +93,13 @@ export const checkUserIsAuth = () => async (dispatch: ThunkDispatch<AppRootState
 }
 
 export const logIn = (email: string, password: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
-
     dispatch(changeStatus('loading'));
     try {
-        const userCredential = await authAPI.loginByPassword(email, password);
+        await authAPI.loginByPassword(email, password);
         dispatch(changeStatus('succeeded'));
         dispatch(changeIsAuth(true));
     } catch (error) {
         dispatch(changeStatus('failed'));
-        //ser LoginForm serverError
-        // const errorCode = error.code;
         const errorMessage = error.message;
         dispatch(setError(errorMessage));
 
@@ -130,7 +127,6 @@ export const logOut = () => async (dispatch: ThunkDispatch<AppRootStateType, unk
 export const registerUser = (email: string, password: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
     dispatch(changeStatus('loading'));
     try {
-        // const userCredential =
         await firebase.auth().createUserWithEmailAndPassword(email, password);
         // const user = userCredential.user;
         dispatch(changeIsRegister(true));

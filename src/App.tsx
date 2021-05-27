@@ -11,7 +11,7 @@ import {AppRootStateType} from './store/store';
 import {checkUserIsAuth} from './store/authReducer';
 import {RequestStatusType} from './store/appReducer';
 import {RegisterPage} from './pages/RegisterPage/RegisterPage';
-import {createList} from './store/listReducer';
+import {createList, deleteList} from './store/listReducer';
 
 const useStyles = makeStyles({
     app: {
@@ -32,7 +32,7 @@ const App = () => {
 
     useEffect(() => {
         if (!user) dispatch(checkUserIsAuth());
-    }, [dispatch]);
+    }, [dispatch, user]);
 
     //Create new list
     const onCreateList = useCallback((title: string) => {
@@ -41,7 +41,11 @@ const App = () => {
             userId: user.uid
         }
         dispatch(createList(data, user.uid));
-    }, [user]);
+    }, [dispatch, user]);
+    //delete list
+    const onDeleteList = useCallback((userId: string) => {
+        dispatch(deleteList(userId, user.uid));
+    }, [dispatch, user]);
 
     if (!user) {
         return <Switch>
@@ -59,7 +63,7 @@ const App = () => {
                 }
                 <Grid container className={classes.appContainer}>
                     <Grid item xs={12} sm={5} md={3} xl={3}>
-                        <AppDrawer onCreateList={onCreateList}/>
+                        <AppDrawer onCreateList={onCreateList} onDeleteList={onDeleteList}/>
                     </Grid>
                     <Grid item xs={12} sm={7} md={9} xl={9}>
                         <Switch>

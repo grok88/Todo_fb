@@ -7,7 +7,7 @@ import {Button, Container, Paper, Snackbar, TextField, Typography} from '@materi
 import MuiAlert, {AlertProps} from '@material-ui/lab/Alert';
 import {setError} from '../../store/appReducer';
 import {makeStyles} from '@material-ui/core/styles';
-import {NavLink, Redirect} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 import {useFormik} from 'formik';
 import {logIn} from '../../store/authReducer';
 
@@ -118,19 +118,13 @@ export const LoginPage: React.FC = React.memo(() => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const error = useSelector<AppRootStateType, null | string>(state => state.app.error);
-    const isAuth = useSelector<AppRootStateType, boolean>(state => state.auth.isAuth);
 
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }
-
         dispatch(setError(null));
     };
-    console.log(isAuth)
-    // if (isAuth ) {
-    //     return <Redirect to={'/'}/>
-    // }
 
     return <Container component="main" className={classes.loginBlock}>
         <div className={classes.paper}>

@@ -14,18 +14,18 @@ type TodoListPropsType = {
     onDeleteTodo: (todoId: string,) => void
     onUpdate: (field: any, todoId: string) => void
     onSelectedTodo: (todo: TodoType | null) => void
-    // sortBy:string
-    // onSort:(sort:string) => void
     onUpdateList:(field: any, listId: string) => void
+    listId:string
 }
 export const TodoList: React.FC<TodoListPropsType> = React.memo((props) => {
-    const {todos, list, onDeleteTodo, onUpdate, onSelectedTodo,onUpdateList} = props;
+    const {todos, list, onDeleteTodo, onUpdate, onSelectedTodo,onUpdateList,listId} = props;
     return (
         <AppContent>
             <div className={'todo-list'}>
                 <TodoHeader list={list}
-                            // sortBy={sortBy} onSort={onSort}
-                            onUpdateList={onUpdateList}/>
+                            onUpdateList={onUpdateList}
+                            listId={listId}
+                />
                 <List>
                     {
                         todos.map(todo => {
