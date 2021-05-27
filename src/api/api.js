@@ -1,57 +1,57 @@
 import {db} from "../firebase";
 import firebase from "firebase";
 
-export function getTodos(userId = '') {
-    return db.collection('todos')
-        // .where('listId', '==', '')
-        .where('userId', '==', userId)
-        .get()
-        .then((snapshot) => {
-            const items = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }))
-            return items;
-        })
-        .catch((error) => {
-            console.log('Error getting documents: ', error);
-        });
-}
+// export function getTodos(userId = '') {
+//     return db.collection('todos')
+//         // .where('listId', '==', '')
+//         .where('userId', '==', userId)
+//         .get()
+//         .then((snapshot) => {
+//             const items = snapshot.docs.map(doc => ({
+//                 id: doc.id,
+//                 ...doc.data()
+//             }))
+//             return items;
+//         })
+//         .catch((error) => {
+//             console.log('Error getting documents: ', error);
+//         });
+// }
 
 // TODO
-export function createTodo(data) {
-    return db.collection("todos").add({
-        completed: false,
-        notes: '',
-        steps: [],
-        ...data,
-    })
-        .then(docRef => docRef.get())
-        .then(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }))
-        .catch((error) => {
-            console.error("Error adding document: ", error);
-        });
-}
+// export function createTodo(data) {
+//     return db.collection("todos").add({
+//         completed: false,
+//         notes: '',
+//         steps: [],
+//         ...data,
+//     })
+//         .then(docRef => docRef.get())
+//         .then(doc => ({
+//             id: doc.id,
+//             ...doc.data()
+//         }))
+//         .catch((error) => {
+//             console.error("Error adding document: ", error);
+//         });
+// }
 
-export function deleteTodoTask(todoId) {
-    return db.collection("todos").doc(todoId).delete()
-        .then(() => todoId);
-}
+// export function deleteTodoTask(todoId) {
+//     return db.collection("todos").doc(todoId).delete()
+//         .then(() => todoId);
+// }
 
-export function updateTodo(data, todoId) {
-    return db.collection("todos").doc(todoId)
-        .update(data)
-        .then(() => {
-            // console.log("Document successfully updated!");
-        })
-        .catch((error) => {
-            // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
-        });
-}
+// export function updateTodo(data, todoId) {
+//     return db.collection("todos").doc(todoId)
+//         .update(data)
+//         .then(() => {
+//             // console.log("Document successfully updated!");
+//         })
+//         .catch((error) => {
+//             // The document probably doesn't exist.
+//             console.error("Error updating document: ", error);
+//         });
+// }
 
 //AUTH
 export const authAPI = {
@@ -91,13 +91,40 @@ export const listsAPI = {
             }))
     }
 }
+//TODOS
+export const todosAPI = {
+    getTodos(userId = '') {
+        return db.collection('todos')
+            .where('userId', '==', userId)
+            .get()
+            .then((snapshot) => {
+                const items = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+                return items;
+            })
+    },
+    createTodo(data) {
+        return db.collection("todos").add({
+            completed: false,
+            notes: '',
+            steps: [],
+            ...data,
+        })
+            .then(docRef => docRef.get())
+            .then(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }))
+    },
+    updateTodo(data, todoId) {
+        return db.collection("todos").doc(todoId).update(data)
+    },
+    deleteTodo(todoId) {
+        return db.collection("todos").doc(todoId).delete()
+            // .then(() => todoId);
+    }
+}
 
-// export function loginByPassword(email, password) {
-//     return firebase.auth().signInWithEmailAndPassword(email, password)
-//         .then(() => console.log('User is Login'))
-//         .catch((error) => {
-//             const errorCode = error.code;
-//             const errorMessage = error.message;
-//             console.log(errorCode, errorMessage)
-//         });
-// }
+

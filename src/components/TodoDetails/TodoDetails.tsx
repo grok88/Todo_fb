@@ -2,7 +2,7 @@ import React from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import {makeStyles} from '@material-ui/core/styles';
 import {IconButton, Paper, Typography} from '@material-ui/core';
-import {TodoType} from '../TodoList/TodoList';
+import { TodoType } from '../../store/todosReducer';
 
 type TodoDetailsPropsType = {
     todo: TodoType

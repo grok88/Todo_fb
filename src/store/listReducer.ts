@@ -46,9 +46,6 @@ export const getLists = (userUid: string) => async (dispatch: ThunkDispatch<AppR
 }
 export const updatelist = (data: any, listId: string, userUid: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
     dispatch(changeStatus('loading'));
-    debugger
-    console.log(listId)
-    console.log(userUid)
     try {
         await listsAPI.updateList(data, listId);
         dispatch(getLists(userUid));
@@ -73,8 +70,8 @@ export const createList = (data: any, userId: string) => async (dispatch: ThunkD
 }
 
 //types
-type SetUserAC = ReturnType<typeof setList>;
+type SetListAC = ReturnType<typeof setList>;
 
 export type ListActionsType =
-    SetUserAC;
+    SetListAC;
 

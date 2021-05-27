@@ -1,8 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useLocation, useParams} from 'react-router-dom';
-
-import {createTodo, deleteTodoTask, getTodos, updateTodo} from '../../api/api';
-import {TodoList, TodoType} from '../../components/TodoList/TodoList';
+import {TodoList} from '../../components/TodoList/TodoList';
 import {TodoForm} from './TodoForm/TodoForm';
 import {makeStyles} from '@material-ui/core/styles';
 import {TodoDetails} from '../../components/TodoDetails/TodoDetails';
@@ -11,11 +9,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from '../../store/store';
 import {UserType} from '../../store/authReducer';
 import {getLists, ListsType, updatelist} from '../../store/listReducer';
+import {createTodo, deleteTodo, getTodos, TodoType, updateTodo} from '../../store/todosReducer';
 
 const useStyles = makeStyles({
     todoListPage: {
-        // padding: '0 10px',
-
     },
     todoContent: {
         flexGrow: 1,
@@ -26,18 +23,15 @@ type  ParamsType = {
     listId: string
     todoId: string
 }
-type TodoListPagePropsType = {
-    // lists: Array<ListsType>
-    // onUpdateList: (field: any, listId: string) => void
-}
+type TodoListPagePropsType = {}
+
 export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) => {
     const classes = useStyles();
-
-    let [todos, setTodos] = useState<Array<TodoType>>([]);
 
     const dispatch = useDispatch();
     const user = useSelector<AppRootStateType, UserType | null>(state => state.auth.user);
     const lists = useSelector<AppRootStateType, Array<ListsType>>(state => state.list.lists);
+    let todos = useSelector<AppRootStateType, Array<TodoType>>(state => state.todos.todos);
 
     const [selectedTodo, setSelectedTodo] = useState<null | TodoType>(null);
 
@@ -47,13 +41,12 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     //todos
     useEffect(() => {
         // @ts-ignore
-        getTodos(user?.uid).then(setTodos);
+        dispatch(getTodos(user?.uid));
     }, [user?.uid]);
 
     //lists
     useEffect(() => {
         if (user) {
-            // @ts-ignore
             dispatch(getLists(user.uid));
         }
     }, [user])
@@ -73,8 +66,8 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
         '/important': todos => todos.filter(todo => todo.important),
         '/planned': todos => todos.filter(todo => todo.dueDate),
     })
-    // filter todos by values
 
+    // filter todos by values
     const getSortedTodos = ({
         title: (a, b) => a.title.localeCompare(b.title),
         // @ts-ignore
@@ -97,34 +90,20 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
             dueDate: null,
             important: false
         }
-        createTodo(data)
-            .then((todo: any) => {
-                // setTodos([...todos, todo]);
-                // @ts-ignore
-                getTodos(user?.uid).then(setTodos);
-            });
+        if (user) dispatch(createTodo(data, user.uid));
     }
 
     //delete todo task by Id
     const onDeleteTodo = (todoId: string) => {
-        deleteTodoTask(todoId)
-            .then(todoId => {
-                // setTodos(todos.filter(todo => todo.id !== todoId));
-                // @ts-ignore
-                getTodos(user?.uid).then(setTodos);
-                setSelectedTodo(null);
-            })
+        if (user) dispatch(deleteTodo(todoId, user.uid));
+        setSelectedTodo(null);
     }
+
     // change todo task status
     const onUpdate = (field: any, todoId: string) => {
-        updateTodo(field, todoId)
-            .then(() => {
-                // @ts-ignore
-                // getSortedCollection('todos', 'listId', listId).then(setTodos);
-                // console.log('SUCCESS')
-                getTodos(user?.uid).then(setTodos);
-            });
+        if (user) dispatch(updateTodo(field, todoId, user.uid));
     }
+
     // onSelected todo for details
     const onSelectedTodo = (todo: TodoType | null) => {
         setSelectedTodo(todo);
@@ -133,7 +112,7 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
     //LISTS
     //update List
     const onUpdateList = useCallback((field: any, listId: string) => {
-        if(user) dispatch(updatelist(field, listId, user.uid));
+        if (user) dispatch(updatelist(field, listId, user.uid));
     }, [user]);
 
     // if(!list || !todos){
@@ -148,8 +127,6 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                               onSelectedTodo={onSelectedTodo}
                               onDeleteTodo={onDeleteTodo}
                               onUpdate={onUpdate}
-                        // sortBy={sortBy}
-                        // onSort={onSortTodos}
                               onUpdateList={onUpdateList}
                     />
                     <TodoForm onSubmitHandler={onSubmitHandler}/>

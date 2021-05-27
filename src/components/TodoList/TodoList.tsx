@@ -4,17 +4,9 @@ import {List} from '@material-ui/core';
 import {TodoListItem} from './TodoListItem/TodoListItem';
 import {TodoHeader} from './TodoHeader/TodoHeader';
 import {ListsType} from '../../store/listReducer';
+import { TodoType } from '../../store/todosReducer';
 
-export type TodoType = {
-    title: string, id: string,
-    listId: string,
-    completed: boolean,
-    dueDate: null | string
-    important: boolean
-    notes: string
-    userId: string
-    steps: Array<any>
-};
+
 
 type TodoListPropsType = {
     list: ListsType

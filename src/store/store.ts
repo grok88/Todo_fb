@@ -3,11 +3,13 @@ import thunk from 'redux-thunk';
 import {AppActionsType, appReducer} from './appReducer';
 import {AuthActionsType, authReducer} from './authReducer';
 import {ListActionsType, listReducer} from './listReducer';
+import {TodosActionsType, todosReducer} from './todosReducer';
 
 const rootReducer = combineReducers({
     app: appReducer,
     auth: authReducer,
-    list: listReducer
+    list: listReducer,
+    todos: todosReducer
 });
 
 export type AppRootStateType = ReturnType<typeof rootReducer>;
@@ -18,4 +20,5 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 export type TodoActionsType = AppActionsType
     | AuthActionsType
-    | ListActionsType;
+    | ListActionsType
+    | TodosActionsType;

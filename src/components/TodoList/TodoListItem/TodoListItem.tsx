@@ -1,10 +1,10 @@
 import React from 'react';
 
-import {TodoType} from '../TodoList';
 import {Checkbox, ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import {TodoType} from '../../../store/todosReducer';
 
 type TodoListItemPropsType = {
     todo: TodoType
