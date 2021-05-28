@@ -131,9 +131,9 @@ export const TodoListPage: React.FC<TodoListPagePropsType> = React.memo((props) 
                     />
                     <TodoForm onSubmitHandler={onSubmitHandler}/>
                 </Grid>
-                <Grid item xs={12} sm={12} md={'auto'}>
+                <Grid item xs={12} sm={12} md={12}>
                     {
-                        selectedTodo && <TodoDetails todo={selectedTodo} onSelectedTodo={onSelectedTodo}/>
+                        selectedTodo && <TodoDetails todo={selectedTodo} onSelectedTodo={onSelectedTodo} onUpdate={onUpdate}/>
                     }
                 </Grid>
             </Grid>
