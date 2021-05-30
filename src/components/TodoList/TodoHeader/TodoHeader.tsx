@@ -16,7 +16,7 @@ const options = [
 type TodoHeaderPropsType = {
     list: ListsType
     onUpdateList: (field: any, listId: string) => void
-    listId:string
+    listId: string
 }
 //styles
 const useStyles = makeStyles({
@@ -33,9 +33,8 @@ const useStyles = makeStyles({
 });
 
 export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
-    const {list, onUpdateList,listId} = props;
+    const {list, onUpdateList, listId} = props;
     const classes = useStyles();
-    console.log(list)
     //menu
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -59,7 +58,7 @@ export const TodoHeader: React.FC<TodoHeaderPropsType> = React.memo((props) => {
                 <ListItem alignItems={'flex-start'}>
                     {list && list.title}
                     {
-                        listId &&  <ListItemSecondaryAction>
+                        listId && <ListItemSecondaryAction>
                             <IconButton
                                 edge={'end'}
                                 aria-controls="long-menu"

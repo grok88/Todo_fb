@@ -1,8 +1,7 @@
 import {ThunkDispatch} from 'redux-thunk';
 import {changeStatus, setError} from './appReducer';
 import {AppRootStateType, TodoActionsType} from './store';
-import {listsAPI, todosAPI} from '../api/api';
-import {getTodos} from './todosReducer';
+import {listsAPI} from '../api/api';
 
 export type ListsType = { title: string, id: string, sort: string, userId: string };
 

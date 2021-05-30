@@ -1,7 +1,3 @@
-import {ThunkDispatch} from 'redux-thunk';
-import {AppRootStateType, TodoActionsType} from './store';
-
-
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed';
 
 const initialState = {
@@ -26,7 +22,6 @@ export const appReducer = (state: InitialAppStateType = initialState, action: Ap
         default:
             return state;
     }
-
 }
 
 export const changeStatus = (status: RequestStatusType) => {
@@ -42,30 +37,6 @@ export const setError = (error: null | string) => {
         payload: error
     } as const
 }
-
-
-//thunks
-export const logoutUser = (link: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
-
-    dispatch(changeStatus('loading'));
-    try {
-        // await API.logout(link, session_id);
-
-        dispatch(changeStatus('succeeded'));
-        // dispatch(setUser(null));
-        // dispatch(changeIsAuth(false));
-        // dispatch(changeDisabled(false));
-    } catch (e) {
-        dispatch(changeStatus('failed'));
-        //ser LoginForm serverError
-        dispatch(setError(e.response.data.status_message));
-
-        setTimeout(() => {
-            dispatch(setError(null));
-        }, 3000);
-    };
-}
-
 
 //types
 type ChangeStatusAC = ReturnType<typeof changeStatus>

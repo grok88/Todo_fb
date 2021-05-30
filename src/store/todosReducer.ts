@@ -77,10 +77,10 @@ export const updateTodo = (data: any, todoId: string, userId: string) => async (
         dispatch(setError(errorMessage));
     }
 }
-export const deleteTodo = (todoId: string ,userId: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
+export const deleteTodo = (todoId: string, userId: string) => async (dispatch: ThunkDispatch<AppRootStateType, unknown, TodoActionsType>, getState: () => AppRootStateType) => {
     dispatch(changeStatus('loading'));
     try {
-        await todosAPI.deleteTodo( todoId);
+        await todosAPI.deleteTodo(todoId);
         dispatch(getTodos(userId));
         dispatch(changeStatus('succeeded'));
     } catch (error) {

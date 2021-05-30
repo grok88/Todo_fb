@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 
 type AppDrawerPropsType = {
     onCreateList: (title: string) => void
-    onDeleteList:(userId:string) => void
+    onDeleteList: (userId: string) => void
 }
 
 const getAvatarIcon = (icon) => {
@@ -55,7 +55,7 @@ const getAvatarIcon = (icon) => {
 
 const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
     const classes = useStyles();
-    const {onCreateList,onDeleteList} = props;
+    const {onCreateList, onDeleteList} = props;
 
     const lists = useSelector<AppRootStateType, Array<ListsType>>(state => state.list.lists);
     const email = useSelector<AppRootStateType, any>(state => state.auth.user?.email);
@@ -136,7 +136,8 @@ const AppDrawer: React.FC<AppDrawerPropsType> = React.memo((props) => {
                             </ListItemIcon>
                             <ListItemText primary={item.title}/>
                             <ListItemSecondaryAction>
-                                <IconButton onClick={() => onDeleteList(item.id)} style={{cursor: 'pointer'}} edge={'end'}>
+                                <IconButton onClick={() => onDeleteList(item.id)} style={{cursor: 'pointer'}}
+                                            edge={'end'}>
                                     <DeleteIcon/>
                                 </IconButton>
                             </ListItemSecondaryAction>
